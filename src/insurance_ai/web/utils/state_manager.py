@@ -11,7 +11,6 @@ Handles errors gracefully with warnings instead of crashes.
 
 import json
 import logging
-from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime
 from pathlib import Path
 from typing import Optional
@@ -376,57 +375,44 @@ def run_workflow(scenario_id: str, mode: str = "offline") -> None:
         st.session_state.workflow_status = "completed"
         return
 
-    # ===== 3. RUN RESERVE + BEHAVIOR PARALLEL =====
+    # ===== 3. RUN RESERVE + BEHAVIOR (SEQUENTIAL) =====
+    # Note: Originally parallel with ThreadPoolExecutor, but Streamlit Cloud
+    # doesn't support st.session_state access from background threads.
+    # Sequential execution is simpler and works reliably on all platforms.
 
-    def run_reserve_wrapper() -> tuple[str, dict, str]:
-        """Run Reserve and return (crew_name, result, status)."""
-        try:
-            result = run_reserve_crew(st.session_state.underwriting_result, mode, fixture)
-            return ("reserve", result, "success")
-        except Exception as e:
-            logger.error(f"Reserve crew failed: {e}")
-            return ("reserve", None, f"failed: {str(e)}")
+    # Run Reserve Crew
+    try:
+        reserve_result = run_reserve_crew(
+            st.session_state.underwriting_result, mode, fixture
+        )
+        st.session_state.reserve_result = reserve_result
+        st.session_state.reserve_status = "success"
+        logger.info("Reserve crew completed successfully")
+    except Exception as e:
+        logger.error(f"Reserve crew failed: {e}")
+        st.session_state.reserve_status = "failed"
+        st.session_state.execution_errors.append({
+            "crew": "reserve",
+            "error": str(e),
+            "timestamp": datetime.now().isoformat(),
+        })
 
-    def run_behavior_wrapper() -> tuple[str, dict, str]:
-        """Run Behavior and return (crew_name, result, status)."""
-        try:
-            result = run_behavior_crew(st.session_state.underwriting_result, mode, fixture)
-            return ("behavior", result, "success")
-        except Exception as e:
-            logger.error(f"Behavior crew failed: {e}")
-            return ("behavior", None, f"failed: {str(e)}")
-
-    # Execute in parallel using ThreadPoolExecutor
-    with ThreadPoolExecutor(max_workers=2) as executor:
-        reserve_future = executor.submit(run_reserve_wrapper)
-        behavior_future = executor.submit(run_behavior_wrapper)
-
-        # Collect results
-        for future in as_completed([reserve_future, behavior_future]):
-            crew_name, result, status = future.result()
-
-            if crew_name == "reserve":
-                if status == "success":
-                    st.session_state.reserve_result = result
-                    st.session_state.reserve_status = "success"
-                else:
-                    st.session_state.reserve_status = "failed"
-                    st.session_state.execution_errors.append({
-                        "crew": "reserve",
-                        "error": status.replace("failed: ", ""),
-                        "timestamp": datetime.now().isoformat(),
-                    })
-            elif crew_name == "behavior":
-                if status == "success":
-                    st.session_state.behavior_result = result
-                    st.session_state.behavior_status = "success"
-                else:
-                    st.session_state.behavior_status = "failed"
-                    st.session_state.execution_errors.append({
-                        "crew": "behavior",
-                        "error": status.replace("failed: ", ""),
-                        "timestamp": datetime.now().isoformat(),
-                    })
+    # Run Behavior Crew
+    try:
+        behavior_result = run_behavior_crew(
+            st.session_state.underwriting_result, mode, fixture
+        )
+        st.session_state.behavior_result = behavior_result
+        st.session_state.behavior_status = "success"
+        logger.info("Behavior crew completed successfully")
+    except Exception as e:
+        logger.error(f"Behavior crew failed: {e}")
+        st.session_state.behavior_status = "failed"
+        st.session_state.execution_errors.append({
+            "crew": "behavior",
+            "error": str(e),
+            "timestamp": datetime.now().isoformat(),
+        })
 
     # ===== 4. RUN HEDGING (if Reserve succeeded) =====
 
