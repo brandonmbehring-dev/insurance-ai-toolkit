@@ -1,0 +1,46 @@
+{
+  "policy_id": "hedge_va_003_short",
+  "portfolio_name": "Short Maturity GLWB",
+  "valuation_date": "2025-12-31",
+  "underlying_spot_price": 100.0,
+  "liability_value": 300000.0,
+  "time_to_maturity_years": 2.0,
+  "liability_greeks": {
+    "delta": -0.5,
+    "gamma": 0.0,
+    "vega": 60.0,
+    "theta": 0.0,
+    "rho": 0.0
+  },
+  "portfolio_delta": -0.5,
+  "portfolio_vega": 60.0,
+  "implied_volatility_atm": 0.16,
+  "hedge_recommendations": [
+    {
+      "action": "buy_puts",
+      "instrument": "equity_put",
+      "strike_price": 95.0,
+      "notional_amount": 550157.296819834,
+      "estimated_cost": 23488.303850911037,
+      "effective_delta": -0.7726492966049346,
+      "rationale": "Reduce delta exposure. Cost-benefit ratio: 351.34x"
+    }
+  ],
+  "recommended_action": "buy_puts",
+  "hedge_cost_bps": 426.93796822625814,
+  "portfolio_delta_after_hedge": -0.7726492966049346,
+  "delta_reduction_percent": 0.5452985932098693,
+  "cost_benefit_ratio": 351.3390964574663,
+  "hedge_effective": false,
+  "hedge_efficiency_score": 100,
+  "processing_method": "OFFLINE_FIXTURE",
+  "validation_metrics": {
+    "put_delta_valid": "PASS",
+    "put_gamma_positive": "PASS",
+    "put_vega_positive": "PASS",
+    "cost_benefit_valid": "GOOD (351.34x)",
+    "hedge_effective": "FAIL",
+    "delta_reduction": "54.5%",
+    "efficiency_score": "100.0/100"
+  }
+}

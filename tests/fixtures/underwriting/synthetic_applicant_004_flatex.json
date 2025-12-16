@@ -1,0 +1,55 @@
+{
+  "applicant_id": "synthetic_004_flatex",
+  "age": 68,
+  "gender": "M",
+  "tobacco_user": false,
+  "product_type": "VA_with_GLWB",
+  "extracted_fields": {
+    "bp_systolic_mmhg": 152,
+    "bp_diastolic_mmhg": 88,
+    "total_cholesterol_mg_dl": 215,
+    "hdl_cholesterol_mg_dl": 45,
+    "ldl_cholesterol_mg_dl": 145,
+    "triglycerides_mg_dl": 125,
+    "glucose_fasting_mg_dl": 108,
+    "bmi": 26.5,
+    "family_history_cardiovascular": false,
+    "family_history_cancer": false,
+    "current_medications": ["Lisinopril 20mg", "Atorvastatin 20mg"],
+    "medical_conditions": ["Hypertension", "Hyperlipidemia"]
+  },
+  "extracted_confidence_scores": {
+    "bp_systolic": 0.94,
+    "bp_diastolic": 0.93,
+    "total_cholesterol": 0.92,
+    "hdl": 0.90,
+    "ldl": 0.91,
+    "triglycerides": 0.89,
+    "glucose": 0.91,
+    "bmi": 0.95,
+    "family_history": 0.88
+  },
+  "risk_classification": "Standard + Flatex (50% adjustment)",
+  "vbt_mortality_adjustment": 1.50,
+  "underwriting_remarks": "Non-smoker, good health management with medications. Well-controlled hypertension and hyperlipidemia. Age and conditions warrant flatex rider.",
+  "recommended_issue_age": 68,
+  "confidence_score": 0.92,
+  "processing_method": "OFFLINE_FIXTURE",
+  "products_approved": {
+    "VA_with_GLWB": {
+      "approved": true,
+      "special_terms": "Flatex rider required (50% adjustment)",
+      "rider_restrictions": []
+    },
+    "FIA": {
+      "approved": true,
+      "special_terms": "Standard rates",
+      "rider_restrictions": []
+    },
+    "RILA": {
+      "approved": true,
+      "special_terms": "Standard rates",
+      "rider_restrictions": []
+    }
+  }
+}

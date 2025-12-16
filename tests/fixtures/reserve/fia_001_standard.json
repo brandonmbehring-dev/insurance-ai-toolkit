@@ -1,0 +1,74 @@
+{
+  "policy_id": "fia_001_standard",
+  "product_type": "FIA",
+  "issue_age": 60,
+  "policy_month": 60,
+  "account_value": 500000,
+  "benefit_base": 500000,
+  "valuation_date": "2025-12-31",
+  "num_scenarios": 150,
+  "expected_liability_pv": 0.0,
+  "mean_reserve": 6748778.457492696,
+  "percentile_reserves": {
+    "10": 5771208.349131976,
+    "25": 6196056.202186216,
+    "50": 6703797.243020886,
+    "75": 7258522.712860442,
+    "90": 7778435.299107839
+  },
+  "cte70_reserve": 7638269.726070276,
+  "cte90_reserve": 8025171.4275188865,
+  "risk_margin": 889491.2685775803,
+  "vm21_reserve": 0.0,
+  "vm22_reserve": 7638269.726070276,
+  "convergence_error_percent": 0.001879180727285458,
+  "converged": true,
+  "sensitivity_results": {
+    "rates_up": {
+      "base_cte70": 7638269.726070276,
+      "shocked_cte70": 7256356.239766762,
+      "change_percent": -5.000000000000012
+    },
+    "rates_down": {
+      "base_cte70": 7638269.726070276,
+      "shocked_cte70": 8020183.21237379,
+      "change_percent": 5.0
+    },
+    "vol_up": {
+      "base_cte70": 7638269.726070276,
+      "shocked_cte70": 8554862.093198711,
+      "change_percent": 12.00000000000002
+    },
+    "vol_down": {
+      "base_cte70": 7638269.726070276,
+      "shocked_cte70": 6721677.358941844,
+      "change_percent": -11.999999999999995
+    },
+    "lapse_up": {
+      "base_cte70": 7638269.726070276,
+      "shocked_cte70": 7027208.147984655,
+      "change_percent": -7.9999999999999964
+    }
+  },
+  "sensitivity_monotonicity": {
+    "rates_up": true,
+    "rates_down": true,
+    "vol_up": true,
+    "vol_down": true,
+    "lapse_up": true
+  },
+  "processing_method": "OFFLINE_FIXTURE",
+  "validation_metrics": {
+    "cte_mean_ratio": "1.132",
+    "cte_mean_ratio_valid": "PASS",
+    "std_dev": "726,739.26",
+    "coefficient_of_variation": "0.108",
+    "cte_gte_mean": "PASS",
+    "convergence_error": "0.19%",
+    "converged": "PASS",
+    "num_scenarios": "150",
+    "regulatory_standard": "VM-22 (Fixed Annuity)",
+    "vm22_compliance": "PASS"
+  },
+  "regulatory_reporting": {}
+}

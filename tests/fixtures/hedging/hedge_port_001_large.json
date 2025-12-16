@@ -1,0 +1,46 @@
+{
+  "policy_id": "hedge_port_001_large",
+  "portfolio_name": "Large Liability Portfolio",
+  "valuation_date": "2025-12-31",
+  "underlying_spot_price": 100.0,
+  "liability_value": 5000000.0,
+  "time_to_maturity_years": 15.0,
+  "liability_greeks": {
+    "delta": -0.5,
+    "gamma": 0.0,
+    "vega": 7500.0,
+    "theta": 0.0,
+    "rho": 0.0
+  },
+  "portfolio_delta": -0.5,
+  "portfolio_vega": 7500.0,
+  "implied_volatility_atm": 0.2,
+  "hedge_recommendations": [
+    {
+      "action": "buy_puts",
+      "instrument": "equity_put",
+      "strike_price": 95.0,
+      "notional_amount": 16598214.159924924,
+      "estimated_cost": 1496470.2903630969,
+      "effective_delta": -0.650618613298535,
+      "rationale": "Reduce delta exposure. Cost-benefit ratio: 166.37x"
+    }
+  ],
+  "recommended_action": "buy_puts",
+  "hedge_cost_bps": 901.5851199077827,
+  "portfolio_delta_after_hedge": -0.650618613298535,
+  "delta_reduction_percent": 0.30123722659707,
+  "cost_benefit_ratio": 166.37364203098488,
+  "hedge_effective": false,
+  "hedge_efficiency_score": 90.123722659707,
+  "processing_method": "OFFLINE_FIXTURE",
+  "validation_metrics": {
+    "put_delta_valid": "PASS",
+    "put_gamma_positive": "PASS",
+    "put_vega_positive": "PASS",
+    "cost_benefit_valid": "GOOD (166.37x)",
+    "hedge_effective": "FAIL",
+    "delta_reduction": "30.1%",
+    "efficiency_score": "90.1/100"
+  }
+}

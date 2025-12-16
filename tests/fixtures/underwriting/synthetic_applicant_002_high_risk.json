@@ -1,0 +1,55 @@
+{
+  "applicant_id": "synthetic_002_high_risk",
+  "age": 62,
+  "gender": "M",
+  "tobacco_user": true,
+  "product_type": "VA_with_GLWB",
+  "extracted_fields": {
+    "bp_systolic_mmhg": 165,
+    "bp_diastolic_mmhg": 105,
+    "total_cholesterol_mg_dl": 268,
+    "hdl_cholesterol_mg_dl": 35,
+    "ldl_cholesterol_mg_dl": 198,
+    "triglycerides_mg_dl": 245,
+    "glucose_fasting_mg_dl": 156,
+    "bmi": 31.2,
+    "family_history_cardiovascular": true,
+    "family_history_cancer": true,
+    "current_medications": ["Metoprolol 50mg", "Atorvastatin 40mg", "Metformin 1000mg"],
+    "medical_conditions": ["Type 2 Diabetes", "Hypertension Stage 2", "Dyslipidemia"]
+  },
+  "extracted_confidence_scores": {
+    "bp_systolic": 0.92,
+    "bp_diastolic": 0.91,
+    "total_cholesterol": 0.94,
+    "hdl": 0.88,
+    "ldl": 0.93,
+    "triglycerides": 0.89,
+    "glucose": 0.91,
+    "bmi": 0.96,
+    "family_history": 0.82
+  },
+  "risk_classification": "Standard + Flatex (100% adjustment)",
+  "vbt_mortality_adjustment": 2.0,
+  "underwriting_remarks": "High-risk applicant. Current smoker, Type 2 diabetes, severe hypertension, dyslipidemia. Recommend flatex rider or decline for living benefit products.",
+  "recommended_issue_age": 62,
+  "confidence_score": 0.89,
+  "processing_method": "OFFLINE_FIXTURE",
+  "products_approved": {
+    "VA_with_GLWB": {
+      "approved": false,
+      "special_terms": "Mortality adjustment exceeds VA + GLWB limits",
+      "rider_restrictions": []
+    },
+    "FIA": {
+      "approved": true,
+      "special_terms": "Flatex rider required (100% adjustment)",
+      "rider_restrictions": []
+    },
+    "RILA": {
+      "approved": true,
+      "special_terms": "Flatex rider required (100% adjustment)",
+      "rider_restrictions": []
+    }
+  }
+}

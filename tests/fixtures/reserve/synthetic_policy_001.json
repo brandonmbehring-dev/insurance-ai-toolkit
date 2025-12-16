@@ -1,0 +1,71 @@
+{
+  "policy_id": "synthetic_001",
+  "product_type": "VA_with_GLWB",
+  "issue_age": 55,
+  "policy_month": 120,
+  "account_value": 450000,
+  "benefit_base": 500000,
+  "glwb_withdrawal_percent": 0.04,
+  "rider_type": "GLWB",
+  "valuation_date": "2024-12-31",
+  "interest_rate_scenario": "base",
+  "equity_volatility": 0.18,
+  "monte_carlo": {
+    "num_scenarios": 100,
+    "num_years": 30,
+    "seed": 42
+  },
+  "reserve_calculations": {
+    "mean_reserve": 78500,
+    "median_reserve": 75200,
+    "cte70_reserve": 95300,
+    "cte90_reserve": 112400,
+    "expected_liability_pv": 72000,
+    "risk_margin_cte70": 23300,
+    "total_reserve": 95300,
+    "reserve_currency": "USD"
+  },
+  "vm21_compliance": {
+    "compliant": true,
+    "reserve_method": "stochastic_discounted_cash_flow",
+    "cash_flow_from_rider": "dynamic_glwb_projections",
+    "interest_rate_scenario_set": "25_economic_scenarios"
+  },
+  "sensitivity_analysis": {
+    "rate_up_50bps": {
+      "reserve": 91200,
+      "change_percent": -4.3
+    },
+    "rate_down_50bps": {
+      "reserve": 99800,
+      "change_percent": 4.7
+    },
+    "vol_up_5pct": {
+      "reserve": 102100,
+      "change_percent": 7.1
+    },
+    "vol_down_5pct": {
+      "reserve": 88900,
+      "change_percent": -6.8
+    }
+  },
+  "convergence_check": {
+    "reserve_100_scenarios": 95800,
+    "reserve_1000_scenarios": 95280,
+    "convergence_error_percent": 0.54,
+    "converged": true
+  },
+  "processing_method": "OFFLINE_FIXTURE",
+  "quality_metrics": {
+    "scenario_count": 100,
+    "cte_convergence": "PASS",
+    "sensitivity_monotonicity": "PASS",
+    "deterministic_reproducibility": "PASS"
+  },
+  "regulatory_reporting": {
+    "vm21_reserve": 95300,
+    "cte_level": "CTE70",
+    "reporting_currency": "USD",
+    "auditor_comment": "Reserve calculation follows principle-based approach. Sensitivity tests validate assumptions."
+  }
+}

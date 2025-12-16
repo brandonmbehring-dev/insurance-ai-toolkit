@@ -1,0 +1,88 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "insurance-ai-toolkit"
+version = "0.1.0"
+description = "Agentic AI for Annuity Product Lifecycle Automation (VA, FIA, RILA)"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+authors = [
+    {name = "Brandon Behring", email = "brandon.behring@example.com"}
+]
+keywords = ["insurance", "annuities", "agentic-ai", "llm", "automation"]
+
+dependencies = [
+    "anthropic>=0.25.0",
+    "langgraph>=0.0.1",
+    "langchain>=0.1.0",
+    "langchain-anthropic>=0.0.1",
+    "pydantic>=2.0.0",
+    "click>=8.1.0",
+    "pyyaml>=6.0",
+    "numpy>=1.24.0",
+    "pandas>=2.0.0",
+    "scipy>=1.10.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.0",
+    "pytest-cov>=4.1.0",
+    "black>=23.0.0",
+    "ruff>=0.1.0",
+    "mypy>=1.4.0",
+]
+
+viz = [
+    "jupyter>=1.0.0",
+    "matplotlib>=3.7.0",
+    "seaborn>=0.12.0",
+]
+
+pdf = [
+    "pdf2image>=1.16.0",
+    "pillow>=10.0.0",
+    "pytesseract>=0.3.10",
+]
+
+web = [
+    "streamlit>=1.28.0",
+    "plotly>=5.14.0",
+]
+
+all = [
+    "insurance-ai-toolkit[dev,viz,pdf,web]",
+]
+
+[project.scripts]
+insurance-ai = "insurance_ai.cli:main"
+
+[tool.setuptools]
+packages = ["insurance_ai"]
+
+[tool.setuptools.package-dir]
+insurance_ai = "src/insurance_ai"
+
+[tool.black]
+line-length = 100
+target-version = ["py310"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "--cov=src/insurance_ai --cov-report=term-missing --cov-report=html"
+markers = [
+    "online: marks tests that require online mode (API keys)",
+]

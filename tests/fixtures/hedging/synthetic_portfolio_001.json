@@ -1,0 +1,84 @@
+{
+  "portfolio_id": "synthetic_001",
+  "valuation_date": "2024-12-31",
+  "portfolio_composition": {
+    "va_glwb_policies": 250,
+    "fia_policies": 150,
+    "rila_policies": 100
+  },
+  "market_data": {
+    "sp500_spot": 5900.0,
+    "implied_volatility": 0.165,
+    "risk_free_rate": 0.045,
+    "dividend_yield": 0.018
+  },
+  "portfolio_greeks": {
+    "delta": 0.62,
+    "gamma": 0.0008,
+    "vega": 2850.0,
+    "theta": -285.0,
+    "rho": 1420.0
+  },
+  "volatility_calibration": {
+    "model": "SABR",
+    "parameters": {
+      "alpha": 0.03,
+      "beta": 0.8,
+      "rho": -0.25,
+      "nu": 0.45
+    },
+    "calibration_rmse": 0.0032,
+    "calibration_status": "PASS"
+  },
+  "option_surface": {
+    "strikes_analyzed": [3500, 4000, 4500, 5000, 5500, 5900, 6500, 7000, 7500],
+    "terms_analyzed": ["1M", "3M", "6M", "1Y", "2Y", "3Y"],
+    "implied_vol_atm_1y": 0.158,
+    "smile_skew": -0.032
+  },
+  "hedge_recommendations": {
+    "recommended_hedge": "put_options_otm",
+    "put_strike": 5600,
+    "put_quantity": 2500,
+    "put_tenor": "1Y",
+    "put_premium_per_contract": 128,
+    "total_hedge_cost": 320000,
+    "hedge_effectiveness": {
+      "portfolio_delta_after_hedge": 0.18,
+      "delta_reduction_percent": 70.8,
+      "gamma_protection": 0.0035,
+      "vega_protection": 1250
+    }
+  },
+  "alternative_hedges": [
+    {
+      "hedge_type": "call_spread",
+      "description": "Buy 6500 call, sell 7500 call",
+      "cost": 95000,
+      "delta_reduction_percent": 55.2
+    },
+    {
+      "hedge_type": "variance_swap",
+      "description": "Swap realized vs implied vol",
+      "cost": 180000,
+      "vega_reduction_percent": 65.0
+    }
+  ],
+  "greeks_accuracy": {
+    "black_scholes_delta": 0.6198,
+    "calculated_delta": 0.6185,
+    "error_percent": 0.021,
+    "validation": "PASS"
+  },
+  "processing_method": "OFFLINE_FIXTURE",
+  "portfolio_risk_summary": {
+    "key_rate_duration": 4.2,
+    "equity_exposure": "62% through embedded options",
+    "interest_rate_sensitivity": "Moderate: -4.2% if rates up 100bps",
+    "recommended_rebalance_frequency": "Quarterly"
+  },
+  "compliance": {
+    "solvency_capital_requirement_impact": "Hedge reduces SCR by 8.5%",
+    "regulatory_approval": "Meets risk governance requirements"
+  }
+}

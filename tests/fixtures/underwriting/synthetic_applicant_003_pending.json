@@ -1,0 +1,55 @@
+{
+  "applicant_id": "synthetic_003_pending",
+  "age": 58,
+  "gender": "F",
+  "tobacco_user": false,
+  "product_type": "VA_with_GLWB",
+  "extracted_fields": {
+    "bp_systolic_mmhg": 142,
+    "bp_diastolic_mmhg": 88,
+    "total_cholesterol_mg_dl": 220,
+    "hdl_cholesterol_mg_dl": 48,
+    "ldl_cholesterol_mg_dl": 145,
+    "triglycerides_mg_dl": 165,
+    "glucose_fasting_mg_dl": 118,
+    "bmi": 27.8,
+    "family_history_cardiovascular": true,
+    "family_history_cancer": false,
+    "current_medications": ["Aspirin daily"],
+    "medical_conditions": ["Borderline hypertension", "Borderline diabetes"]
+  },
+  "extracted_confidence_scores": {
+    "bp_systolic": 0.62,
+    "bp_diastolic": 0.61,
+    "total_cholesterol": 0.58,
+    "hdl": 0.59,
+    "ldl": 0.60,
+    "triglycerides": 0.64,
+    "glucose": 0.65,
+    "bmi": 0.68,
+    "family_history": 0.48
+  },
+  "risk_classification": "Pending Review",
+  "vbt_mortality_adjustment": 1.25,
+  "underwriting_remarks": "Medical record quality poor. Low extraction confidence (<70%) on key fields. Recommend requesting updated medical records or medical exam.",
+  "recommended_issue_age": 58,
+  "confidence_score": 0.62,
+  "processing_method": "OFFLINE_FIXTURE",
+  "products_approved": {
+    "VA_with_GLWB": {
+      "approved": false,
+      "special_terms": "Pending manual underwriting review",
+      "rider_restrictions": []
+    },
+    "FIA": {
+      "approved": false,
+      "special_terms": "Pending manual underwriting review",
+      "rider_restrictions": []
+    },
+    "RILA": {
+      "approved": false,
+      "special_terms": "Pending manual underwriting review",
+      "rider_restrictions": []
+    }
+  }
+}

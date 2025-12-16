@@ -1,0 +1,74 @@
+{
+  "policy_id": "rila_002_large",
+  "product_type": "RILA",
+  "issue_age": 55,
+  "policy_month": 36,
+  "account_value": 1000000,
+  "benefit_base": 1050000,
+  "valuation_date": "2025-12-31",
+  "num_scenarios": 150,
+  "expected_liability_pv": 0.0,
+  "mean_reserve": 15412204.121930905,
+  "percentile_reserves": {
+    "10": 13090164.399701234,
+    "25": 14039643.489913896,
+    "50": 15262761.054289661,
+    "75": 16705611.300688902,
+    "90": 18137718.180874214
+  },
+  "cte70_reserve": 17600602.652882453,
+  "cte90_reserve": 18579321.732437484,
+  "risk_margin": 2188398.5309515484,
+  "vm21_reserve": 0.0,
+  "vm22_reserve": 17600602.652882453,
+  "convergence_error_percent": 0.008316737061819126,
+  "converged": true,
+  "sensitivity_results": {
+    "rates_up": {
+      "base_cte70": 17600602.652882453,
+      "shocked_cte70": 16720572.52023833,
+      "change_percent": -4.999999999999999
+    },
+    "rates_down": {
+      "base_cte70": 17600602.652882453,
+      "shocked_cte70": 18480632.785526577,
+      "change_percent": 5.000000000000009
+    },
+    "vol_up": {
+      "base_cte70": 17600602.652882453,
+      "shocked_cte70": 19712674.971228346,
+      "change_percent": 11.999999999999993
+    },
+    "vol_down": {
+      "base_cte70": 17600602.652882453,
+      "shocked_cte70": 15488530.334536558,
+      "change_percent": -12.000000000000004
+    },
+    "lapse_up": {
+      "base_cte70": 17600602.652882453,
+      "shocked_cte70": 16192554.440651856,
+      "change_percent": -8.000000000000004
+    }
+  },
+  "sensitivity_monotonicity": {
+    "rates_up": true,
+    "rates_down": true,
+    "vol_up": true,
+    "vol_down": true,
+    "lapse_up": true
+  },
+  "processing_method": "OFFLINE_FIXTURE",
+  "validation_metrics": {
+    "cte_mean_ratio": "1.142",
+    "cte_mean_ratio_valid": "PASS",
+    "std_dev": "1,764,629.59",
+    "coefficient_of_variation": "0.114",
+    "cte_gte_mean": "PASS",
+    "convergence_error": "0.83%",
+    "converged": "PASS",
+    "num_scenarios": "150",
+    "regulatory_standard": "VM-22 (Fixed Annuity)",
+    "vm22_compliance": "PASS"
+  },
+  "regulatory_reporting": {}
+}

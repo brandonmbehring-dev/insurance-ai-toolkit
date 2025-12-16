@@ -1,0 +1,55 @@
+{
+  "applicant_id": "synthetic_001",
+  "age": 55,
+  "gender": "M",
+  "tobacco_user": false,
+  "product_type": "VA_with_GLWB",
+  "extracted_fields": {
+    "bp_systolic_mmhg": 128,
+    "bp_diastolic_mmhg": 82,
+    "total_cholesterol_mg_dl": 185,
+    "hdl_cholesterol_mg_dl": 52,
+    "ldl_cholesterol_mg_dl": 115,
+    "triglycerides_mg_dl": 95,
+    "glucose_fasting_mg_dl": 92,
+    "bmi": 24.5,
+    "family_history_cardiovascular": false,
+    "family_history_cancer": false,
+    "current_medications": ["Lisinopril 10mg daily"],
+    "medical_conditions": ["Controlled hypertension"]
+  },
+  "extracted_confidence_scores": {
+    "bp_systolic": 0.95,
+    "bp_diastolic": 0.94,
+    "total_cholesterol": 0.93,
+    "hdl": 0.91,
+    "ldl": 0.92,
+    "triglycerides": 0.88,
+    "glucose": 0.89,
+    "bmi": 0.97,
+    "family_history": 0.85
+  },
+  "risk_classification": "Standard",
+  "vbt_mortality_adjustment": 1.0,
+  "underwriting_remarks": "Standard risk. Good health metrics for age. Well-controlled hypertension.",
+  "recommended_issue_age": 55,
+  "confidence_score": 0.91,
+  "processing_method": "OFFLINE_FIXTURE",
+  "products_approved": {
+    "VA_with_GLWB": {
+      "approved": true,
+      "special_terms": "None",
+      "rider_restrictions": []
+    },
+    "FIA": {
+      "approved": true,
+      "special_terms": "None",
+      "rider_restrictions": []
+    },
+    "RILA": {
+      "approved": true,
+      "special_terms": "None",
+      "rider_restrictions": []
+    }
+  }
+}

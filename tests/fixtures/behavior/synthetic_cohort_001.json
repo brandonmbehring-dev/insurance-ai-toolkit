@@ -1,0 +1,124 @@
+{
+  "cohort_id": "synthetic_001",
+  "cohort_size": 1000,
+  "product_type": "VA_with_GLWB",
+  "valuation_date": "2024-12-31",
+  "issue_ages": {
+    "min": 50,
+    "max": 70,
+    "mean": 58.5
+  },
+  "policy_months": {
+    "min": 12,
+    "max": 240,
+    "mean": 84
+  },
+  "dynamic_lapse_model": {
+    "model_type": "moneyness_sensitive",
+    "base_model": "SOA_2006_VBT_adjusted",
+    "features": [
+      "moneyness",
+      "issue_age",
+      "policy_duration",
+      "interest_rate_environment"
+    ]
+  },
+  "lapse_rates_by_moneyness": {
+    "deeply_itm": {
+      "moneyness_range": [1.3, 2.0],
+      "lapse_rate": 0.18,
+      "count_policies": 120,
+      "scenario": "Policyholder has significant gains, rational to surrender"
+    },
+    "itm": {
+      "moneyness_range": [1.1, 1.3],
+      "lapse_rate": 0.12,
+      "count_policies": 280,
+      "scenario": "Policyholder has moderate gains"
+    },
+    "atm": {
+      "moneyness_range": [0.95, 1.1],
+      "lapse_rate": 0.06,
+      "count_policies": 340,
+      "scenario": "Rider value neutral"
+    },
+    "otm": {
+      "moneyness_range": [0.8, 0.95],
+      "lapse_rate": 0.03,
+      "count_policies": 180,
+      "scenario": "Rider valuable, policyholder holds"
+    },
+    "deeply_otm": {
+      "moneyness_range": [0.0, 0.8],
+      "lapse_rate": 0.02,
+      "count_policies": 80,
+      "scenario": "Rider highly valuable, strong incentive to hold"
+    }
+  },
+  "rate_sensitivity": {
+    "scenario_rates_up_100bps": {
+      "avg_lapse_rate": 0.081,
+      "change_bps": -8,
+      "interpretation": "Higher rates make GLWB less valuable, lapse decreases"
+    },
+    "scenario_rates_base": {
+      "avg_lapse_rate": 0.089,
+      "change_bps": 0,
+      "interpretation": "Base case assumption"
+    },
+    "scenario_rates_down_100bps": {
+      "avg_lapse_rate": 0.098,
+      "change_bps": 9,
+      "interpretation": "Lower rates make GLWB more valuable, lapse increases slightly"
+    }
+  },
+  "path_simulation": {
+    "num_paths": 100,
+    "num_years": 30,
+    "num_companies": 100,
+    "seed": 42,
+    "equity_paths": {
+      "mean_return": 0.075,
+      "volatility": 0.18,
+      "correlation_matrix": "identity"
+    }
+  },
+  "reserve_impact_analysis": {
+    "static_lapse_assumption_reserve": 95300,
+    "dynamic_lapse_reserve": 92800,
+    "reserve_difference": -2500,
+    "reserve_difference_percent": -2.62,
+    "interpretation": "Dynamic lapse modeling shows policyholder behavior is more rational (lower lapse when ITM), reducing reserve slightly"
+  },
+  "withdrawal_behavior": {
+    "average_withdrawal_percent_of_benefit": 0.038,
+    "withdrawal_increases_when": [
+      "Moneyness increases above 1.2",
+      "Interest rates decline",
+      "Market volatility increases"
+    ],
+    "withdrawal_decreases_when": [
+      "Benefit base erodes relative to account value",
+      "Interest rates rise",
+      "Market volatility decreases"
+    ]
+  },
+  "surrender_behavior": {
+    "rational_exercise_threshold": 0.95,
+    "surrender_lag_years": 0.5,
+    "hardship_surrender_percent": 0.03,
+    "mortality_correlation": "standard_vbt"
+  },
+  "processing_method": "OFFLINE_FIXTURE",
+  "validation_metrics": {
+    "lapse_monotonicity_itm_vs_atm": "PASS (12% > 6%)",
+    "lapse_monotonicity_atm_vs_otm": "PASS (6% > 3%)",
+    "rate_sensitivity_direction": "PASS (rates down → lapse up)",
+    "path_convergence": "PASS (n=100 vs n=1000 within 2.1%)"
+  },
+  "modeling_assumptions": {
+    "assumption_set": "Conservative but realistic",
+    "rationale": "Reflects observed industry behavior while accounting for rational exercise",
+    "data_source": "SOA annuity experience studies + internal assumption refinements"
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "policy_id": "hedge_va_002_highvol",
+  "portfolio_name": "High Vol GLWB",
+  "valuation_date": "2025-12-31",
+  "underlying_spot_price": 100.0,
+  "liability_value": 500000.0,
+  "time_to_maturity_years": 10.0,
+  "liability_greeks": {
+    "delta": -0.5,
+    "gamma": 0.0,
+    "vega": 500.0,
+    "theta": 0.0,
+    "rho": 0.0
+  },
+  "portfolio_delta": -0.5,
+  "portfolio_vega": 500.0,
+  "implied_volatility_atm": 0.35,
+  "hedge_recommendations": [
+    {
+      "action": "buy_puts",
+      "instrument": "equity_put",
+      "strike_price": 95.0,
+      "notional_amount": 1301701.6278948318,
+      "estimated_cost": 293508.9665122669,
+      "effective_delta": -0.692056301261842,
+      "rationale": "Reduce delta exposure. Cost-benefit ratio: 66.52x"
+    }
+  ],
+  "recommended_action": "buy_puts",
+  "hedge_cost_bps": 2254.809859821273,
+  "portfolio_delta_after_hedge": -0.692056301261842,
+  "delta_reduction_percent": 0.38411260252368407,
+  "cost_benefit_ratio": 66.52445630687888,
+  "hedge_effective": false,
+  "hedge_efficiency_score": 98.41126025236841,
+  "processing_method": "OFFLINE_FIXTURE",
+  "validation_metrics": {
+    "put_delta_valid": "PASS",
+    "put_gamma_positive": "PASS",
+    "put_vega_positive": "PASS",
+    "cost_benefit_valid": "GOOD (66.52x)",
+    "hedge_effective": "FAIL",
+    "delta_reduction": "38.4%",
+    "efficiency_score": "98.4/100"
+  }
+}

@@ -1,0 +1,16 @@
+[theme]
+primaryColor = "#003DA5"
+backgroundColor = "#FFFFFF"
+secondaryBackgroundColor = "#F5F5F5"
+textColor = "#333333"
+font = "sans serif"
+
+[client]
+showErrorDetails = false
+toolbarMode = "viewer"
+
+[logger]
+level = "info"
+
+[client.showSidebarNavigation]
+showSidebarNavigation = true

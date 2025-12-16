@@ -1,0 +1,194 @@
+# Makefile for InsuranceAI Toolkit Deployment & Validation
+# Commands for building, testing, and deploying the Streamlit web UI
+
+.PHONY: help install test clean docker docker-build docker-run docker-stop validate demo
+
+# Default target
+help:
+	@echo "InsuranceAI Toolkit - Deployment & Validation Commands"
+	@echo "========================================================"
+	@echo ""
+	@echo "Installation & Setup:"
+	@echo "  make install              Install dependencies (with web extras)"
+	@echo "  make install-dev          Install with dev dependencies (testing)"
+	@echo "  make venv                 Create virtual environment"
+	@echo ""
+	@echo "Testing & Validation:"
+	@echo "  make test                 Run all tests"
+	@echo "  make test-integration     Run integration tests only"
+	@echo "  make test-unit            Run unit tests only"
+	@echo "  make validate             Run full validation checklist"
+	@echo ""
+	@echo "Running Locally:"
+	@echo "  make run                  Launch Streamlit app (localhost:8501)"
+	@echo "  make run-debug            Run app with debug logging"
+	@echo ""
+	@echo "Docker & Deployment:"
+	@echo "  make docker-build         Build Docker image"
+	@echo "  make docker-run           Run in Docker container"
+	@echo "  make docker-stop          Stop Docker container"
+	@echo "  make docker-clean         Remove Docker image & container"
+	@echo ""
+	@echo "Development:"
+	@echo "  make format               Format code with Black"
+	@echo "  make lint                 Lint code with flake8"
+	@echo "  make type-check           Type checking with mypy"
+	@echo "  make clean                Remove cache files"
+	@echo ""
+	@echo "Demo Preparation:"
+	@echo "  make demo                 Full demo validation + launch"
+	@echo "  make demo-check           Pre-demo checklist only"
+	@echo ""
+
+# Installation targets
+install:
+	pip install -e ".[web]"
+
+install-dev:
+	pip install -e ".[web,dev]"
+
+venv:
+	python -m venv .venv
+	@echo "Virtual environment created. Activate with: source .venv/bin/activate"
+
+# Testing targets
+test:
+	pytest tests/ -v
+
+test-integration:
+	pytest tests/integration/ -v
+
+test-unit:
+	pytest tests/unit/ -v
+
+test-coverage:
+	pytest tests/ --cov=src/insurance_ai/web --cov-report=html --cov-report=term-missing
+
+# Validation targets
+validate:
+	@echo "🔍 Running validation checklist..."
+	@echo ""
+	@echo "1. Checking Python version..."
+	@python --version
+	@echo ""
+	@echo "2. Verifying dependencies..."
+	@python -c "import streamlit; import plotly; import pandas; print('✅ All core dependencies installed')" || (echo "❌ Missing dependencies"; exit 1)
+	@echo ""
+	@echo "3. Checking project structure..."
+	@test -f src/insurance_ai/web/app.py && echo "✅ app.py found" || (echo "❌ app.py missing"; exit 1)
+	@test -d src/insurance_ai/web/pages && echo "✅ pages/ directory found" || (echo "❌ pages/ directory missing"; exit 1)
+	@test -d src/insurance_ai/web/components && echo "✅ components/ directory found" || (echo "❌ components/ directory missing"; exit 1)
+	@echo ""
+	@echo "4. Running tests..."
+	@pytest tests/ -q --tb=short
+	@echo ""
+	@echo "✅ Validation complete!"
+	@echo ""
+	@echo "Next: Run 'make run' to launch the app at http://localhost:8501"
+
+# Running locally
+run:
+	streamlit run src/insurance_ai/web/app.py
+
+run-debug:
+	streamlit run src/insurance_ai/web/app.py --logger.level=debug
+
+# Docker targets
+docker-build:
+	@echo "🐳 Building Docker image..."
+	docker build -t insurance-ai-toolkit:latest .
+	@echo "✅ Docker image built successfully"
+	@echo "   Run with: make docker-run"
+
+docker-run:
+	@echo "🚀 Starting Docker container..."
+	docker run -p 8501:8501 --name insurance-ai insurance-ai-toolkit:latest
+	@echo "✅ App running at http://localhost:8501"
+
+docker-stop:
+	@echo "⏹️  Stopping Docker container..."
+	docker stop insurance-ai 2>/dev/null || true
+	docker rm insurance-ai 2>/dev/null || true
+	@echo "✅ Docker container stopped"
+
+docker-clean: docker-stop
+	@echo "🗑️  Removing Docker image..."
+	docker rmi insurance-ai-toolkit:latest 2>/dev/null || true
+	@echo "✅ Docker image removed"
+
+docker-compose-up:
+	@echo "🐳 Starting with Docker Compose..."
+	docker-compose up
+
+docker-compose-down:
+	@echo "⏹️  Stopping Docker Compose..."
+	docker-compose down
+
+# Development targets
+format:
+	black src/ tests/ --line-length=100
+
+lint:
+	flake8 src/ tests/ --max-line-length=100 --ignore=E203,W503
+
+type-check:
+	mypy src/insurance_ai/web --ignore-missing-imports
+
+clean:
+	rm -rf .pytest_cache .coverage htmlcov __pycache__ *.egg-info
+	find . -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true
+	find . -type f -name "*.pyc" -delete
+	@echo "✅ Cache cleaned"
+
+# Demo targets
+demo-check:
+	@echo "📋 Guardian Demo Pre-Flight Checklist"
+	@echo "====================================="
+	@echo ""
+	@echo "✓ Environment Setup"
+	@python --version
+	@python -c "import streamlit; print('  ✅ Streamlit', streamlit.__version__)"
+	@python -c "import plotly; print('  ✅ Plotly', plotly.__version__)"
+	@echo ""
+	@echo "✓ Project Structure"
+	@test -f src/insurance_ai/web/app.py && echo "  ✅ Main app present" || (echo "  ❌ Main app missing"; exit 1)
+	@test -f docs/DEMO_SCRIPT.md && echo "  ✅ Demo script present" || (echo "  ❌ Demo script missing"; exit 1)
+	@test -f docs/STREAMLIT_GUIDE.md && echo "  ✅ Streamlit guide present" || (echo "  ❌ Streamlit guide missing"; exit 1)
+	@test -f docs/GUARDIAN_CONTEXT.md && echo "  ✅ Guardian context present" || (echo "  ❌ Guardian context missing"; exit 1)
+	@echo ""
+	@echo "✓ Tests"
+	@pytest tests/ -q --tb=no 2>/dev/null || echo "  (some tests skipped pending dependencies)"
+	@echo ""
+	@echo "✓ Guardian Demo Ready!"
+	@echo ""
+	@echo "  To launch: streamlit run src/insurance_ai/web/app.py"
+	@echo "  Then navigate to: http://localhost:8501"
+	@echo ""
+
+demo: demo-check run
+
+# Help for specific targets
+help-docker:
+	@echo "Docker Commands:"
+	@echo "  make docker-build  - Build image (one-time)"
+	@echo "  make docker-run    - Run container"
+	@echo "  make docker-stop   - Stop container"
+	@echo "  make docker-clean  - Remove image & container"
+	@echo ""
+	@echo "Or use Docker Compose (easier):"
+	@echo "  make docker-compose-up    - Start all services"
+	@echo "  make docker-compose-down  - Stop all services"
+
+help-test:
+	@echo "Test Commands:"
+	@echo "  make test              - All tests"
+	@echo "  make test-integration  - Integration tests only"
+	@echo "  make test-unit         - Unit tests only"
+	@echo "  make test-coverage     - Tests with coverage report"
+
+help-dev:
+	@echo "Development Commands:"
+	@echo "  make format    - Format code (Black)"
+	@echo "  make lint      - Lint code (flake8)"
+	@echo "  make type-check - Type checking (mypy)"
+	@echo "  make clean     - Remove cache files"

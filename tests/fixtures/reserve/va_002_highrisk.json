@@ -1,0 +1,74 @@
+{
+  "policy_id": "va_002_highrisk",
+  "product_type": "VA_with_GLWB",
+  "issue_age": 75,
+  "policy_month": 240,
+  "account_value": 100000,
+  "benefit_base": 150000,
+  "valuation_date": "2025-12-31",
+  "num_scenarios": 150,
+  "expected_liability_pv": 0.0,
+  "mean_reserve": 2012819.374087942,
+  "percentile_reserves": {
+    "10": 1728685.0732915013,
+    "25": 1840633.5712435383,
+    "50": 2001905.2544480055,
+    "75": 2175331.404035107,
+    "90": 2328376.4455271214
+  },
+  "cte70_reserve": 2285202.6352090375,
+  "cte90_reserve": 2399824.418688881,
+  "risk_margin": 272383.2611210954,
+  "vm21_reserve": 2285202.6352090375,
+  "vm22_reserve": 0.0,
+  "convergence_error_percent": 0.007493646910543371,
+  "converged": true,
+  "sensitivity_results": {
+    "rates_up": {
+      "base_cte70": 2285202.6352090375,
+      "shocked_cte70": 2170942.5034485855,
+      "change_percent": -5.000000000000003
+    },
+    "rates_down": {
+      "base_cte70": 2285202.6352090375,
+      "shocked_cte70": 2399462.7669694894,
+      "change_percent": 5.000000000000003
+    },
+    "vol_up": {
+      "base_cte70": 2285202.6352090375,
+      "shocked_cte70": 2559426.9514341224,
+      "change_percent": 12.00000000000002
+    },
+    "vol_down": {
+      "base_cte70": 2285202.6352090375,
+      "shocked_cte70": 2010978.3189839532,
+      "change_percent": -11.99999999999999
+    },
+    "lapse_up": {
+      "base_cte70": 2285202.6352090375,
+      "shocked_cte70": 2102386.4243923146,
+      "change_percent": -7.999999999999993
+    }
+  },
+  "sensitivity_monotonicity": {
+    "rates_up": true,
+    "rates_down": true,
+    "vol_up": true,
+    "vol_down": true,
+    "lapse_up": true
+  },
+  "processing_method": "OFFLINE_FIXTURE",
+  "validation_metrics": {
+    "cte_mean_ratio": "1.135",
+    "cte_mean_ratio_valid": "PASS",
+    "std_dev": "223,494.71",
+    "coefficient_of_variation": "0.111",
+    "cte_gte_mean": "PASS",
+    "convergence_error": "0.75%",
+    "converged": "PASS",
+    "num_scenarios": "150",
+    "regulatory_standard": "VM-21 (Variable Annuity)",
+    "vm21_compliance": "PASS"
+  },
+  "regulatory_reporting": {}
+}
