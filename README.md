@@ -2,7 +2,7 @@
 
 **Agentic AI system for automating Variable Annuity (VA), Fixed Index Annuity (FIA), and Registered Index-Linked Annuity (RILA) workflows with guaranteed living benefits.**
 
-![Status](https://img.shields.io/badge/status-v0.2.0-blue)
+![Status](https://img.shields.io/badge/status-v0.3.1-blue)
 ![Python](https://img.shields.io/badge/python-3.10%2B-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
 [![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://insurance-ai-toolkit.streamlit.app)
@@ -22,6 +22,23 @@ The web UI demonstrates the full workflow:
 - **Scenarios** — What-if analysis
 
 > No installation required. All calculations run with real LangGraph crews.
+
+---
+
+## Educational Notebooks
+
+Interactive Jupyter notebooks explain the math behind the toolkit:
+
+| Notebook | Topic | Open in Colab |
+|----------|-------|---------------|
+| [01_reserves_vm21.ipynb](notebooks/01_reserves_vm21.ipynb) | VM-21 CTE70 Reserve Calculation | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/brandonmbehring-dev/insurance-ai-toolkit/blob/main/notebooks/01_reserves_vm21.ipynb) |
+| [02_behavior_lapse.ipynb](notebooks/02_behavior_lapse.ipynb) | Dynamic Lapse Rate Modeling | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/brandonmbehring-dev/insurance-ai-toolkit/blob/main/notebooks/02_behavior_lapse.ipynb) |
+
+**Topics covered:**
+- Monte Carlo simulation for reserve estimation
+- CTE (Conditional Tail Expectation) vs VaR
+- S-curve dynamic lapse models
+- Sensitivity analysis techniques
 
 ---
 
@@ -304,17 +321,26 @@ Demonstrates **regulatory calculation concepts** (VM-21/VM-22). **NOT FOR PRODUC
 - Schema validation (Pydantic)
 - Outcome-based validation metrics
 
-### ✅ v0.2.0 (Current)
+### ✅ v0.2.0
 - **Streamlit web UI** with 6 pages, 8 chart types
 - **Real LangGraph crews** replace mock implementations
 - Full workflow orchestration (UW → Reserve + Behavior → Hedging)
 - Deployed to Streamlit Cloud
 
-### 🚀 v0.3.0 (Planned)
-- Claude Vision API integration for PDFs
-- Real-time market data (FRED, Yahoo Finance)
-- CSV/PDF export functionality
-- Jupyter notebooks for each crew
+### ✅ v0.2.1
+- CSV export for all crews
+- PDF report generation
+- Online/Offline mode toggle in UI
+
+### ✅ v0.3.0
+- **Live market data** from FRED API (Treasury yields, S&P 500, VIX)
+- Yield curve chart in sidebar
+- 24-hour caching with manual refresh
+
+### ✅ v0.3.1 (Current)
+- **Educational Jupyter notebooks** with Google Colab support
+- VM-21 CTE70 deep dive notebook
+- Dynamic lapse modeling notebook
 
 ### 🔮 Future
 - Multi-user authentication
@@ -354,7 +380,7 @@ For detailed design decisions, see:
 
 ---
 
-**Last Updated:** 2025-12-16
-**Version:** v0.2.0
+**Last Updated:** 2025-12-17
+**Version:** v0.3.1
 **Status:** Live on Streamlit Cloud
-**Maintained By:** Brandon Behring
+**Maintained By:** [Brandon Behring](https://www.linkedin.com/in/brandon-behring/)

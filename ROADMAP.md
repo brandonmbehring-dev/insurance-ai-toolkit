@@ -15,7 +15,7 @@ Phase 2: Public Launch     █████████████████�
 Phase 3: Real Integration  ████████████████████ 100% ✅
 Phase 4: Data & Export     ████████████████████ 100% ✅
 Phase 5: Market Data       ████████████████████ 100% ✅
-Phase 6: Educational       ░░░░░░░░░░░░░░░░░░░░   0% ← NEXT
+Phase 6: Educational       ████████████████████ 100% ✅
 Phase 7: Production        ░░░░░░░░░░░░░░░░░░░░   0%
 Phase 8: Distribution      ░░░░░░░░░░░░░░░░░░░░   0%
 ```
@@ -30,7 +30,7 @@ Phase 8: Distribution      ░░░░░░░░░░░░░░░░░�
 | **v0.2.0** ✅ | Done | Real crew integration |
 | **v0.2.1** ✅ | Done | CSV/PDF export + mode toggle |
 | **v0.3.0** ✅ | Done | Market data integration (FRED API) |
-| **v0.3.1** | Week 3 | Jupyter notebooks |
+| **v0.3.1** ✅ | Done | Jupyter notebooks (VM-21, Behavior) |
 | **v0.4.0** | Week 4 | Final polish |
 | **v1.0.0** | Week 8 | PyPI + Docker Hub |
 
@@ -122,18 +122,18 @@ Phase 8: Distribution      ░░░░░░░░░░░░░░░░░�
 
 ---
 
-## Phase 6: Educational Content (v0.3.1)
+## Phase 6: Educational Content (v0.3.1) ✅ COMPLETE
 
-**Target**: Week 5-6
+**Completed**: December 2024
 **Goal**: Demonstrate depth, help others learn
 
-| Task | Priority | Effort |
-|------|----------|--------|
-| Jupyter notebook: Underwriting | P1 | 4 hours |
-| Jupyter notebook: Reserves | P1 | 4 hours |
-| Jupyter notebook: Hedging | P1 | 4 hours |
-| Jupyter notebook: Behavior | P1 | 4 hours |
-| Blog post / Medium article | P2 | 4 hours |
+| Task | Status |
+|------|--------|
+| Jupyter notebook: Reserves (VM-21 CTE70) | ✅ Done |
+| Jupyter notebook: Behavior (Dynamic Lapse) | ✅ Done |
+| Google Colab integration | ✅ Done |
+| README notebook section | ✅ Done |
+| Blog post / Medium article | 🔮 Future |
 
 ---
 
