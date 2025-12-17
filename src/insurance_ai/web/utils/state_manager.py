@@ -3,9 +3,10 @@ Streamlit session state management and crew orchestration.
 
 Implements hybrid sequential execution:
 1. Underwriting (always first) → gates downstream
-2. Reserve + Behavior (parallel if UW approves)
+2. Reserve + Behavior (sequential if UW approves)
 3. Hedging (optional, if Reserve succeeds)
 
+Now uses REAL LangGraph crews instead of mock implementations (v0.2.0).
 Handles errors gracefully with warnings instead of crashes.
 """
 
@@ -20,6 +21,27 @@ try:
 except ImportError:
     # Allow module to be imported outside Streamlit context
     st = None
+
+# Real crew imports (v0.2.0)
+from insurance_ai.crews.underwriting import (
+    UnderwritingState,
+    run_underwriting_crew as real_underwriting_crew,
+    ProductType as UWProductType,
+    RiskClass,
+)
+from insurance_ai.crews.reserve import (
+    ReserveState,
+    run_reserve_crew as real_reserve_crew,
+    ProductType as RSProductType,
+)
+from insurance_ai.crews.behavior import (
+    BehaviorState,
+    run_behavior_crew as real_behavior_crew,
+)
+from insurance_ai.crews.hedging import (
+    HedgingState,
+    run_hedging_crew as real_hedging_crew,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -128,7 +150,14 @@ def check_scenario_changed() -> bool:
 
 # ===== FIXTURE LOADING =====
 
-@st.cache_resource(show_spinner=False)
+def _cache_decorator(func):
+    """Apply Streamlit cache decorator only when in Streamlit context."""
+    if st is not None:
+        return st.cache_resource(show_spinner=False)(func)
+    return func
+
+
+@_cache_decorator
 def load_all_fixtures() -> dict:
     """
     Load all enriched behavior fixtures (cached).
@@ -176,31 +205,130 @@ def load_scenario_fixture(scenario_id: str) -> dict:
     return all_fixtures[scenario_id]
 
 
-# ===== CREW EXECUTION (MOCK IMPLEMENTATIONS) =====
+# ===== FIXTURE-TO-STATE CONVERSION FUNCTIONS =====
+
+def fixture_to_underwriting_state(fixture: dict) -> UnderwritingState:
+    """
+    Convert fixture dict to UnderwritingState for real crew execution.
+
+    Args:
+        fixture: Fixture data from scenario JSON
+
+    Returns:
+        UnderwritingState ready for crew execution
+    """
+    return UnderwritingState(
+        applicant_id=fixture.get("policy_id", "unknown"),
+        product_type=UWProductType.VA_GLWB,
+        age=fixture.get("issue_age", 55),
+        gender=fixture.get("gender", "M"),
+    )
+
+
+def fixture_to_reserve_state(fixture: dict) -> ReserveState:
+    """
+    Convert fixture dict to ReserveState for real crew execution.
+
+    Args:
+        fixture: Fixture data from scenario JSON
+
+    Returns:
+        ReserveState ready for crew execution
+    """
+    return ReserveState(
+        policy_id=fixture.get("policy_id", "unknown"),
+        product_type=RSProductType.VA_GLWB,
+        issue_age=fixture.get("issue_age", 55),
+        policy_month=fixture.get("policy_month", 0),
+        account_value=fixture.get("account_value", 100000),
+        benefit_base=fixture.get("benefit_base", 100000),
+        valuation_date=fixture.get("valuation_date", "2025-01-01"),
+        num_scenarios=100,  # Keep low for demo speed
+    )
+
+
+def fixture_to_behavior_state(fixture: dict) -> BehaviorState:
+    """
+    Convert fixture dict to BehaviorState for real crew execution.
+
+    Args:
+        fixture: Fixture data from scenario JSON
+
+    Returns:
+        BehaviorState ready for crew execution
+    """
+    return BehaviorState(
+        policy_id=fixture.get("policy_id", "unknown"),
+        portfolio_name=fixture.get("portfolio_name", "Demo Portfolio"),
+        valuation_date=fixture.get("valuation_date", "2025-01-01"),
+        account_value=fixture.get("account_value", 100000),
+        benefit_base=fixture.get("benefit_base", 100000),
+        annual_withdrawal_amount=fixture.get("annual_withdrawal_amount", 5000),
+        time_to_maturity_years=fixture.get("time_to_maturity_years", 15),
+        risk_free_rate=fixture.get("risk_free_rate", 0.03),
+        market_volatility=fixture.get("market_volatility", 0.18),
+        base_lapse_rate=fixture.get("base_lapse_rate", 0.06),
+        num_scenarios=100,  # Keep low for demo speed
+    )
+
+
+def fixture_to_hedging_state(fixture: dict) -> HedgingState:
+    """
+    Convert fixture dict to HedgingState for real crew execution.
+
+    Args:
+        fixture: Fixture data from scenario JSON
+
+    Returns:
+        HedgingState ready for crew execution
+    """
+    return HedgingState(
+        policy_id=fixture.get("policy_id", "unknown"),
+        portfolio_name=fixture.get("portfolio_name", "Demo Portfolio"),
+        valuation_date=fixture.get("valuation_date", "2025-01-01"),
+        underlying_spot_price=fixture.get("underlying_spot_price", 100.0),
+        liability_value=fixture.get("account_value", 100000),  # Use AV as liability proxy
+        time_to_maturity_years=fixture.get("time_to_maturity_years", 15),
+        implied_volatility_atm=fixture.get("market_volatility", 0.18),
+    )
+
+
+# ===== CREW EXECUTION (REAL IMPLEMENTATIONS v0.2.0) =====
 
 def run_underwriting_crew(fixture: dict, mode: str = "offline") -> dict:
     """
-    Run Underwriting Crew (mock for now).
+    Run Underwriting Crew (REAL implementation v0.2.0).
 
-    In full implementation, this would call the actual LangGraph crew.
+    Executes the actual LangGraph crew for mortality risk classification.
 
     Args:
         fixture: Fixture data from scenario
         mode: "offline" or "online"
 
     Returns:
-        UnderwritingState result dictionary
+        Result dictionary with underwriting decision
 
     Raises:
         Exception if crew fails
     """
-    # For offline mode, return approval from fixture
     if mode == "offline":
+        # Convert fixture to state
+        state = fixture_to_underwriting_state(fixture)
+        logger.info(f"Running real Underwriting crew for {state.applicant_id}")
+
+        # Run real crew
+        result_state = real_underwriting_crew(state)
+
+        # Convert result to UI dict format
         return {
-            "policy_id": fixture.get("policy_id", "unknown"),
-            "approval_decision": "APPROVE",  # Simplified for demo
-            "confidence_score": 0.95,
-            "risk_class": "Standard",
+            "policy_id": result_state.applicant_id,
+            "approval_decision": result_state.risk_class.value,
+            "confidence_score": result_state.confidence_score,
+            "risk_class": result_state.vbt_mortality_class or "Standard",
+            "underwriting_notes": result_state.underwriting_notes,
+            "extraction_confidence": result_state.extraction_confidence,
+            "mortality_adjustment_percent": result_state.mortality_adjustment_percent,
+            "processing_method": result_state.processing_method,
         }
 
     # Online mode would call Claude Vision + extraction logic
@@ -213,7 +341,9 @@ def run_reserve_crew(
     fixture: Optional[dict] = None,
 ) -> dict:
     """
-    Run Reserve Crew (mock for now).
+    Run Reserve Crew (REAL implementation v0.2.0).
+
+    Executes the actual LangGraph crew for VM-21/CTE70 reserve calculation.
 
     Args:
         underwriting_result: Output from Underwriting
@@ -221,18 +351,21 @@ def run_reserve_crew(
         fixture: Full fixture data (for offline mode)
 
     Returns:
-        ReserveState result dictionary
+        Result dictionary with reserve calculations
     """
     if mode == "offline" and fixture:
-        # Return reserve metrics from fixture
-        return {
-            "policy_id": fixture.get("policy_id", "unknown"),
-            "account_value": fixture.get("account_value", 0),
-            "benefit_base": fixture.get("benefit_base", 0),
-            "cte70_reserve": fixture.get("account_value", 0) * 0.1,  # Simplified
-            "avg_reserve": fixture.get("account_value", 0) * 0.08,
-            "num_scenarios": fixture.get("num_scenarios", 100),
-        }
+        # Convert fixture to state
+        state = fixture_to_reserve_state(fixture)
+        logger.info(f"Running real Reserve crew for {state.policy_id}")
+
+        # Run real crew
+        result_state = real_reserve_crew(state)
+
+        # Return full result dictionary from state
+        result = result_state.to_dict()
+        # Add backward-compatible keys for UI
+        result["avg_reserve"] = result_state.mean_reserve
+        return result
 
     raise NotImplementedError("Online mode not yet implemented")
 
@@ -243,7 +376,9 @@ def run_behavior_crew(
     fixture: Optional[dict] = None,
 ) -> dict:
     """
-    Run Behavior Crew (mock for now).
+    Run Behavior Crew (REAL implementation v0.2.0).
+
+    Executes the actual LangGraph crew for dynamic lapse/withdrawal modeling.
 
     Args:
         underwriting_result: Output from Underwriting
@@ -251,16 +386,22 @@ def run_behavior_crew(
         fixture: Full fixture data (for offline mode)
 
     Returns:
-        BehaviorState result dictionary
+        Result dictionary with behavior modeling
     """
     if mode == "offline" and fixture:
-        return {
-            "policy_id": fixture.get("policy_id", "unknown"),
-            "moneyness": fixture.get("moneyness", 1.0),
-            "dynamic_lapse_rate": fixture.get("dynamic_lapse_rate", 0.06),
-            "probability_in_force": fixture.get("probability_in_force_at_maturity", 0.90),
-            "reserve_impact": fixture.get("reserve_impact_from_behavior", 0),
-        }
+        # Convert fixture to state
+        state = fixture_to_behavior_state(fixture)
+        logger.info(f"Running real Behavior crew for {state.policy_id}")
+
+        # Run real crew
+        result_state = real_behavior_crew(state)
+
+        # Return full result dictionary from state
+        result = result_state.to_dict()
+        # Add backward-compatible keys for UI
+        result["probability_in_force"] = result_state.probability_in_force_at_maturity
+        result["reserve_impact"] = result_state.reserve_impact_from_behavior
+        return result
 
     raise NotImplementedError("Online mode not yet implemented")
 
@@ -271,7 +412,9 @@ def run_hedging_crew(
     fixture: Optional[dict] = None,
 ) -> dict:
     """
-    Run Hedging Crew (mock for now).
+    Run Hedging Crew (REAL implementation v0.2.0).
+
+    Executes the actual LangGraph crew for Greeks and hedge recommendations.
 
     Args:
         reserve_result: Output from Reserve
@@ -279,15 +422,35 @@ def run_hedging_crew(
         fixture: Full fixture data (for offline mode)
 
     Returns:
-        HedgingState result dictionary
+        Result dictionary with hedging analysis
     """
+    if mode == "offline" and fixture:
+        # Convert fixture to state
+        state = fixture_to_hedging_state(fixture)
+        logger.info(f"Running real Hedging crew for {state.policy_id}")
+
+        # Run real crew
+        result_state = real_hedging_crew(state)
+
+        # Return full result dictionary from state
+        result = result_state.to_dict()
+        # Add backward-compatible keys for UI
+        result["portfolio_value"] = result_state.liability_value
+        result["delta"] = result_state.portfolio_delta
+        result["gamma"] = result_state.liability_greeks.gamma
+        result["vega"] = result_state.portfolio_vega
+        result["hedge_recommendation"] = result_state.recommended_action.value
+        result["hedge_cost"] = result_state.hedge_cost_bps * result_state.liability_value / 10000
+        return result
+
+    # Fallback for offline mode without fixture (shouldn't happen)
     if mode == "offline":
         return {
             "portfolio_value": reserve_result.get("account_value", 0),
             "delta": -0.65,
             "gamma": 0.002,
             "vega": 0.15,
-            "hedge_recommendation": "Buy put spreads",
+            "hedge_recommendation": "hold",
             "hedge_cost": reserve_result.get("account_value", 0) * 0.005,
         }
 
