@@ -2,9 +2,26 @@
 
 **Agentic AI system for automating Variable Annuity (VA), Fixed Index Annuity (FIA), and Registered Index-Linked Annuity (RILA) workflows with guaranteed living benefits.**
 
-![Status](https://img.shields.io/badge/status-prototype-blue)
+![Status](https://img.shields.io/badge/status-v0.2.0-blue)
 ![Python](https://img.shields.io/badge/python-3.10%2B-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
+[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://insurance-ai-toolkit.streamlit.app)
+
+---
+
+## Live Demo
+
+**Try it now:** [https://insurance-ai-toolkit.streamlit.app](https://insurance-ai-toolkit.streamlit.app)
+
+The web UI demonstrates the full workflow:
+- **Dashboard** — Run all 4 crews with one click
+- **Underwriting** — Medical extraction, risk classification
+- **Reserves** — VM-21, CTE70, sensitivity analysis
+- **Hedging** — Greeks, hedge recommendations
+- **Behavior** — Dynamic lapse curves, withdrawal modeling
+- **Scenarios** — What-if analysis
+
+> No installation required. All calculations run with real LangGraph crews.
 
 ---
 
@@ -36,7 +53,7 @@ brew install poppler
 sudo apt-get install poppler-utils
 
 # Clone and install
-git clone https://github.com/yourusername/insurance-ai-toolkit.git
+git clone https://github.com/brandonmbehring-dev/insurance-ai-toolkit.git
 cd insurance_ai_toolkit
 pip install -e .
 ```
@@ -205,7 +222,7 @@ ANTHROPIC_API_KEY=sk-... insurance-ai underwriting --online
 ### Install for Development
 
 ```bash
-git clone https://github.com/yourusername/insurance-ai-toolkit
+git clone https://github.com/brandonmbehring-dev/insurance-ai-toolkit
 cd insurance_ai_toolkit
 
 # Install in editable mode with dev dependencies
@@ -281,22 +298,27 @@ Demonstrates **regulatory calculation concepts** (VM-21/VM-22). **NOT FOR PRODUC
 
 ## Roadmap
 
-### ✅ v0.1.0 (Current)
+### ✅ v0.1.0
 - Offline mode with JSON fixtures
 - CLI for all 4 crews
 - Schema validation (Pydantic)
 - Outcome-based validation metrics
 
-### 🚀 v0.2.0 (Planned)
+### ✅ v0.2.0 (Current)
+- **Streamlit web UI** with 6 pages, 8 chart types
+- **Real LangGraph crews** replace mock implementations
+- Full workflow orchestration (UW → Reserve + Behavior → Hedging)
+- Deployed to Streamlit Cloud
+
+### 🚀 v0.3.0 (Planned)
 - Claude Vision API integration for PDFs
-- Full online mode validation
-- Jupyter notebooks for each crew (01_underwriting_crew_demo.ipynb, etc.)
-- Multi-product examples (VA/FIA/RILA scenarios)
+- Real-time market data (FRED, Yahoo Finance)
+- CSV/PDF export functionality
+- Jupyter notebooks for each crew
 
 ### 🔮 Future
-- Streamlit web UI
-- Real-world market data integration
-- Production deployment patterns
+- Multi-user authentication
+- Production deployment patterns (AWS, K8s)
 - PyPI publishing
 
 ---
@@ -332,6 +354,7 @@ For detailed design decisions, see:
 
 ---
 
-**Last Updated:** 2025-12-15
-**Status:** Portfolio-grade prototype
+**Last Updated:** 2025-12-16
+**Version:** v0.2.0
+**Status:** Live on Streamlit Cloud
 **Maintained By:** Brandon Behring
