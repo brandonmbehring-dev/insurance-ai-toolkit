@@ -9,6 +9,7 @@ import numpy as np
 import streamlit as st
 
 from insurance_ai.web import __version__
+from insurance_ai.web.components.export import render_crew_export_section
 from insurance_ai.web.components.charts import (
     display_metric_row,
     plot_cte70_histogram,
@@ -245,6 +246,10 @@ def render_reserves_page() -> None:
     2. **Hedging Crew** (risk mitigation via options)
     3. **Summary Report** (cross-crew insights)
     """)
+
+    # ===== EXPORT =====
+    st.markdown("---")
+    render_crew_export_section("reserves")
 
     # ===== FOOTER =====
     st.markdown("---")

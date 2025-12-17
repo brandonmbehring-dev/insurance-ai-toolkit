@@ -17,6 +17,8 @@ import streamlit as st
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
 from insurance_ai.web import __version__
+from insurance_ai.web.components.export import render_all_exports_section
+from insurance_ai.web.components.pdf_report import render_report_download_section
 from insurance_ai.web.config import (
     EXECUTION_MODE,
     GuardianTheme,
@@ -114,21 +116,36 @@ def render_sidebar() -> None:
 
         # ===== MODE TOGGLE =====
         st.markdown("#### 🔄 Execution Mode")
-        col1, col2 = st.columns(2)
-
-        with col1:
-            if st.button("📊 Offline", use_container_width=True):
-                st.session_state.selected_mode = "offline"
-                st.rerun()
-
-        with col2:
-            if st.button("🌐 Online", use_container_width=True):
-                st.session_state.selected_mode = "online"
-                st.rerun()
 
         current_mode = st.session_state.get("selected_mode", "offline")
-        mode_icon = "📊" if current_mode == "offline" else "🌐"
-        st.info(f"{mode_icon} **Mode**: {current_mode.upper()}")
+
+        # Radio button for mode selection
+        mode_choice = st.radio(
+            "Mode",
+            options=["offline", "online"],
+            index=0 if current_mode == "offline" else 1,
+            format_func=lambda x: "📊 Offline (Fixtures)" if x == "offline" else "🌐 Online (API)",
+            horizontal=True,
+            label_visibility="collapsed",
+            key="mode_radio",
+        )
+
+        # Update mode if changed
+        if mode_choice != current_mode:
+            st.session_state.selected_mode = mode_choice
+            st.rerun()
+
+        # Mode status indicator
+        if current_mode == "offline":
+            st.success("**Offline**: Using pre-computed fixtures (fast, no API)")
+        else:
+            # Check if API key is available
+            import os
+            api_key_set = bool(os.getenv("ANTHROPIC_API_KEY"))
+            if api_key_set:
+                st.info("**Online**: Claude API enabled")
+            else:
+                st.warning("**Online**: API key not set. Add ANTHROPIC_API_KEY to secrets.")
 
         # ===== RUN BUTTON =====
         st.markdown("---")
@@ -275,6 +292,13 @@ def render_main_dashboard() -> None:
         - Review fixture data in `tests/fixtures/behavior/`
         - See implementation in `src/insurance_ai/web/`
         """)
+
+    # ===== EXPORT ALL RESULTS =====
+    st.markdown("---")
+    render_all_exports_section()
+
+    # ===== GENERATE REPORTS =====
+    render_report_download_section()
 
 
 # ===== FOOTER =====

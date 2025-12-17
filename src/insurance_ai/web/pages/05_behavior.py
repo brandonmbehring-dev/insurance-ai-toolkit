@@ -9,6 +9,7 @@ import numpy as np
 import streamlit as st
 
 from insurance_ai.web import __version__
+from insurance_ai.web.components.export import render_crew_export_section
 from insurance_ai.web.components.charts import (
     plot_lapse_curve,
     plot_scenario_comparison,
@@ -323,6 +324,10 @@ def render_behavior_page() -> None:
     ✅ **Behavior modeling complete.** Proceeding to:
     1. **Summary Report** (cross-crew synthesis and recommendations)
     """)
+
+    # ===== EXPORT =====
+    st.markdown("---")
+    render_crew_export_section("behavior")
 
     # ===== FOOTER =====
     st.markdown("---")

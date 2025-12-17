@@ -8,6 +8,7 @@ Located at: /app?page=scenarios
 import streamlit as st
 
 from insurance_ai.web import __version__
+from insurance_ai.web.components.export import render_crew_export_section
 
 
 def render_scenarios_page() -> None:
@@ -390,6 +391,10 @@ def render_scenarios_page() -> None:
     3. Backtesting: Compare model predictions vs actual lapse behavior
     4. Integration with Guardian's pricing system for rate tables
     """)
+
+    # ===== EXPORT =====
+    st.markdown("---")
+    render_crew_export_section("scenarios")
 
     # ===== FOOTER =====
     st.markdown("---")

@@ -8,6 +8,7 @@ Located at: /app?page=underwriting
 import streamlit as st
 
 from insurance_ai.web import __version__
+from insurance_ai.web.components.export import render_crew_export_section
 
 # Assuming this is run as a page within the app context
 # (pages are auto-discovered by Streamlit)
@@ -200,6 +201,10 @@ def render_underwriting_page() -> None:
         - Policy rejected at underwriting stage
         - Consider alternative risk classes (rated, decline)
         """)
+
+    # ===== EXPORT =====
+    st.markdown("---")
+    render_crew_export_section("underwriting")
 
     # ===== FOOTER =====
     st.markdown("---")

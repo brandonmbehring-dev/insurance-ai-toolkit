@@ -9,6 +9,7 @@ import numpy as np
 import streamlit as st
 
 from insurance_ai.web import __version__
+from insurance_ai.web.components.export import render_crew_export_section
 from insurance_ai.web.components.charts import (
     plot_greek_heatmap,
     plot_payoff_diagram,
@@ -362,6 +363,10 @@ def render_hedging_page() -> None:
     1. **Behavior Crew** (customer lapse analysis)
     2. **Summary Report** (cross-crew synthesis)
     """)
+
+    # ===== EXPORT =====
+    st.markdown("---")
+    render_crew_export_section("hedging")
 
     # ===== FOOTER =====
     st.markdown("---")
