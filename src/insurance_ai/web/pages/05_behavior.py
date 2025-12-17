@@ -8,6 +8,7 @@ Located at: /app?page=behavior
 import numpy as np
 import streamlit as st
 
+from insurance_ai.web import __version__
 from insurance_ai.web.components.charts import (
     plot_lapse_curve,
     plot_scenario_comparison,
@@ -326,7 +327,7 @@ def render_behavior_page() -> None:
     # ===== FOOTER =====
     st.markdown("---")
     st.caption(
-        "Behavior Crew v0.1.0 | Dynamic Lapse + Withdrawal Modeling | Educational Prototype"
+        f"Behavior Crew v{__version__} | Dynamic Lapse + Withdrawal Modeling | Educational Prototype"
     )
 
 

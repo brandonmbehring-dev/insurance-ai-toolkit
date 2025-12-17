@@ -16,6 +16,7 @@ import streamlit as st
 # Add src to path
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
+from insurance_ai.web import __version__
 from insurance_ai.web.config import (
     EXECUTION_MODE,
     GuardianTheme,
@@ -33,7 +34,7 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded",
     menu_items={
-        "About": "InsuranceAI Toolkit v0.1.0 - Streamlit Web UI for insurance automation"
+        "About": f"InsuranceAI Toolkit v{__version__} - Streamlit Web UI for insurance automation"
     },
 )
 
@@ -74,7 +75,7 @@ def render_header() -> None:
         )
 
     with col3:
-        st.markdown("<p style='text-align: right;'><small>v0.1.0</small></p>", unsafe_allow_html=True)
+        st.markdown(f"<p style='text-align: right;'><small>v{__version__}</small></p>", unsafe_allow_html=True)
 
     st.markdown("---")
     st.markdown(
@@ -284,7 +285,7 @@ def render_footer() -> None:
     col1, col2, col3 = st.columns(3)
 
     with col1:
-        st.caption("InsuranceAI Toolkit v0.1.0")
+        st.caption(f"InsuranceAI Toolkit v{__version__}")
 
     with col2:
         st.caption(f"Mode: {st.session_state.get('selected_mode', 'offline').upper()}")

@@ -7,6 +7,8 @@ Located at: /app?page=scenarios
 
 import streamlit as st
 
+from insurance_ai.web import __version__
+
 
 def render_scenarios_page() -> None:
     """Render the Scenarios comparison page."""
@@ -391,7 +393,7 @@ def render_scenarios_page() -> None:
 
     # ===== FOOTER =====
     st.markdown("---")
-    st.caption("Scenarios Crew v0.1.0 | Comparison & What-If Analysis | Educational Prototype")
+    st.caption(f"Scenarios Crew v{__version__} | Comparison & What-If Analysis | Educational Prototype")
 
 
 if __name__ == "__main__":

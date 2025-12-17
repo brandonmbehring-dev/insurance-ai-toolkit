@@ -7,6 +7,8 @@ Located at: /app?page=underwriting
 
 import streamlit as st
 
+from insurance_ai.web import __version__
+
 # Assuming this is run as a page within the app context
 # (pages are auto-discovered by Streamlit)
 
@@ -201,7 +203,7 @@ def render_underwriting_page() -> None:
 
     # ===== FOOTER =====
     st.markdown("---")
-    st.caption("Underwriting Crew v0.1.0 | Using synthetic medical data only")
+    st.caption(f"Underwriting Crew v{__version__} | Using synthetic medical data only")
 
 
 if __name__ == "__main__":

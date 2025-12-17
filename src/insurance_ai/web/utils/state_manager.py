@@ -508,7 +508,7 @@ def run_workflow(scenario_id: str, mode: str = "offline") -> None:
         st.session_state.underwriting_result = uw_result
         st.session_state.underwriting_status = "success"
         st.session_state.underwriting_approval = (
-            uw_result.get("approval_decision") == "APPROVE"
+            uw_result.get("approval_decision", "").startswith("APPROVED")
         )
         logger.info(f"Underwriting: {st.session_state.underwriting_approval}")
 

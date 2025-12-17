@@ -8,6 +8,7 @@ Located at: /app?page=reserves
 import numpy as np
 import streamlit as st
 
+from insurance_ai.web import __version__
 from insurance_ai.web.components.charts import (
     display_metric_row,
     plot_cte70_histogram,
@@ -247,7 +248,7 @@ def render_reserves_page() -> None:
 
     # ===== FOOTER =====
     st.markdown("---")
-    st.caption("Reserve Crew v0.1.0 | VM-21 Educational Prototype | Not for regulatory filing")
+    st.caption(f"Reserve Crew v{__version__} | VM-21 Educational Prototype | Not for regulatory filing")
 
 
 if __name__ == "__main__":

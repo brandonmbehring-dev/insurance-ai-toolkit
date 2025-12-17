@@ -8,6 +8,7 @@ Located at: /app?page=hedging
 import numpy as np
 import streamlit as st
 
+from insurance_ai.web import __version__
 from insurance_ai.web.components.charts import (
     plot_greek_heatmap,
     plot_payoff_diagram,
@@ -364,7 +365,7 @@ def render_hedging_page() -> None:
 
     # ===== FOOTER =====
     st.markdown("---")
-    st.caption("Hedging Crew v0.1.0 | Greeks & Hedge Recommendations | Educational Prototype")
+    st.caption(f"Hedging Crew v{__version__} | Greeks & Hedge Recommendations | Educational Prototype")
 
 
 if __name__ == "__main__":
