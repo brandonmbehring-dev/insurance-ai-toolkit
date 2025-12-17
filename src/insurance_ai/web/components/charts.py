@@ -474,3 +474,68 @@ def display_metric_row(metrics: Dict[str, Tuple[str, str]]) -> None:
     for col, (metric_name, (value, delta)) in zip(cols, metrics.items()):
         with col:
             st.metric(metric_name, value, delta=delta)
+
+
+# ===== YIELD CURVE CHART =====
+
+@st.cache_resource
+def plot_yield_curve(
+    tenors: List[str],
+    yields: List[float],
+    title: str = "Treasury Yield Curve",
+    show_inversion: bool = True,
+) -> go.Figure:
+    """
+    Plot Treasury yield curve with optional inversion highlighting.
+
+    Args:
+        tenors: List of tenor labels (e.g., ["1Y", "2Y", "5Y", "10Y", "30Y"])
+        yields: Corresponding yield values
+        title: Chart title
+        show_inversion: Highlight inverted portions of curve
+
+    Returns:
+        Plotly Figure
+    """
+    colors = get_guardian_colors()
+
+    fig = go.Figure()
+
+    # Main yield curve
+    fig.add_trace(
+        go.Scatter(
+            x=tenors,
+            y=yields,
+            mode="lines+markers",
+            name="Treasury Yields",
+            line=dict(color=colors["primary"], width=3),
+            marker=dict(size=10),
+            fill="tozeroy",
+            fillcolor=f"rgba(0, 61, 165, 0.1)",
+        )
+    )
+
+    # Check for inversion (2Y > 10Y)
+    if show_inversion and len(yields) >= 4:
+        yield_2y = yields[1]  # Assuming order: 1Y, 2Y, 5Y, 10Y, 30Y
+        yield_10y = yields[3]
+        if yield_2y > yield_10y:
+            spread = yield_2y - yield_10y
+            fig.add_annotation(
+                x="5Y",
+                y=max(yields),
+                text=f"⚠️ Inverted: {spread:.2f}%",
+                showarrow=False,
+                font=dict(color=colors["warning"], size=12),
+            )
+
+    fig.update_layout(
+        title=title,
+        xaxis_title="Maturity",
+        yaxis_title="Yield (%)",
+        hovermode="x unified",
+        template="plotly_white",
+        height=300,
+    )
+
+    return fig

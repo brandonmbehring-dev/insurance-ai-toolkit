@@ -12,10 +12,10 @@
 Phase 0: Foundation        ████████████████████ 100% ✅
 Phase 1: Web UI            ████████████████████ 100% ✅
 Phase 2: Public Launch     ████████████████████ 100% ✅
-Phase 3: Real Integration  ████████████████░░░░  80% ✅
-Phase 4: Data & Export     ████░░░░░░░░░░░░░░░░  20% 🔴 ← CURRENT
-Phase 5: Market Data       ░░░░░░░░░░░░░░░░░░░░   0%
-Phase 6: Educational       ░░░░░░░░░░░░░░░░░░░░   0%
+Phase 3: Real Integration  ████████████████████ 100% ✅
+Phase 4: Data & Export     ████████████████████ 100% ✅
+Phase 5: Market Data       ████████████████████ 100% ✅
+Phase 6: Educational       ░░░░░░░░░░░░░░░░░░░░   0% ← NEXT
 Phase 7: Production        ░░░░░░░░░░░░░░░░░░░░   0%
 Phase 8: Distribution      ░░░░░░░░░░░░░░░░░░░░   0%
 ```
@@ -28,8 +28,8 @@ Phase 8: Distribution      ░░░░░░░░░░░░░░░░░�
 |---------|--------|-----------------|
 | **v0.1.0** ✅ | Done | Streamlit UI + fixtures |
 | **v0.2.0** ✅ | Done | Real crew integration |
-| **v0.2.1** | Week 1 | CSV/PDF export + mode toggle |
-| **v0.3.0** | Week 2 | Market data integration |
+| **v0.2.1** ✅ | Done | CSV/PDF export + mode toggle |
+| **v0.3.0** ✅ | Done | Market data integration (FRED API) |
 | **v0.3.1** | Week 3 | Jupyter notebooks |
 | **v0.4.0** | Week 4 | Final polish |
 | **v1.0.0** | Week 8 | PyPI + Docker Hub |
@@ -75,7 +75,7 @@ Phase 8: Distribution      ░░░░░░░░░░░░░░░░░�
 
 ---
 
-## Phase 3: Real Integration (v0.2.0) ✅ MOSTLY COMPLETE
+## Phase 3: Real Integration (v0.2.0) ✅ COMPLETE
 
 **Completed**: December 2024
 **Goal**: Replace fixtures with real crew execution
@@ -83,39 +83,42 @@ Phase 8: Distribution      ░░░░░░░░░░░░░░░░░�
 | Task | Status |
 |------|--------|
 | Real crew integration (4 crews) | ✅ Done |
-| Online mode toggle | ⏳ In Progress (v0.2.1) |
+| Online mode toggle | ✅ Done (v0.2.1) |
 | Claude Vision PDF extraction | 🔮 Future |
-| Error handling for API failures | ⏳ Partial |
+| Error handling for API failures | ✅ Done |
 | Loading states + progress bars | ⏳ Week 4 |
 
 ---
 
-## Phase 4: Data & Export (v0.2.1)
+## Phase 4: Data & Export (v0.2.1) ✅ COMPLETE
 
-**Target**: Week 3
+**Completed**: December 2024
 **Goal**: Make results actionable
 
-| Task | Priority | Effort |
-|------|----------|--------|
-| CSV export | P0 | 2 hours |
-| PDF report generation | P1 | 4 hours |
-| Scenario save/load | P1 | 4 hours |
-| Comparison export | P2 | 2 hours |
+| Task | Status |
+|------|--------|
+| CSV export (all crews) | ✅ Done |
+| PDF report generation | ✅ Done |
+| Online/Offline toggle | ✅ Done |
+| Export buttons on all pages | ✅ Done |
 
 ---
 
-## Phase 5: Market Data (v0.3.0)
+## Phase 5: Market Data (v0.3.0) ✅ COMPLETE
 
-**Target**: Week 4-5
+**Completed**: December 2024
 **Goal**: Real-world data integration
 
-| Task | Priority | Effort |
-|------|----------|--------|
-| FRED API integration | P0 | 4 hours |
-| Yahoo Finance integration | P1 | 4 hours |
-| Real-time rate curves | P1 | 1 day |
-| Market data caching | P2 | 4 hours |
-| Historical scenario replay | P2 | 1 day |
+| Task | Status |
+|------|--------|
+| FRED API integration | ✅ Done |
+| Treasury yield curve (1Y-30Y) | ✅ Done |
+| S&P 500 + VIX indices | ✅ Done |
+| Fed Funds rate | ✅ Done |
+| Yield curve chart | ✅ Done |
+| 24-hour caching with refresh | ✅ Done |
+| Graceful fallback to fixtures | ✅ Done |
+| Historical scenario replay | 🔮 Future |
 
 ---
 

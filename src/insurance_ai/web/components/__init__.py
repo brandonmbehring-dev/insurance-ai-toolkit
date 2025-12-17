@@ -15,6 +15,10 @@ from .export import (
     render_crew_export_section,
     render_download_button,
 )
+from .market_data import (
+    render_market_sidebar,
+    render_yield_curve_chart,
+)
 from .pdf_report import (
     generate_markdown_report,
     generate_pdf_report,
@@ -32,6 +36,9 @@ __all__ = [
     "render_download_button",
     "render_crew_export_section",
     "render_all_exports_section",
+    # Market data functions
+    "render_market_sidebar",
+    "render_yield_curve_chart",
     # Report functions
     "generate_markdown_report",
     "generate_pdf_report",

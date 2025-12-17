@@ -18,6 +18,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
 from insurance_ai.web import __version__
 from insurance_ai.web.components.export import render_all_exports_section
+from insurance_ai.web.components.market_data import render_market_sidebar
 from insurance_ai.web.components.pdf_report import render_report_download_section
 from insurance_ai.web.config import (
     EXECUTION_MODE,
@@ -172,6 +173,10 @@ def render_sidebar() -> None:
             st.success("Workflow completed")
         elif status == "error":
             st.error("Workflow error")
+
+        # ===== MARKET DATA =====
+        st.markdown("---")
+        render_market_sidebar()
 
 
 # ===== MAIN CONTENT AREA =====

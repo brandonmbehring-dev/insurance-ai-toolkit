@@ -4,7 +4,7 @@ InsuranceAI Toolkit - Streamlit Web UI
 Main web application package with configuration, state management, and UI components.
 """
 
-__version__ = "0.2.1"
+__version__ = "0.3.0"
 
 from .config import EXECUTION_MODE, ExecutionMode
 
