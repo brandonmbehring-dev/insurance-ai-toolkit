@@ -2,7 +2,7 @@
 
 **Agentic AI system for automating Variable Annuity (VA), Fixed Index Annuity (FIA), and Registered Index-Linked Annuity (RILA) workflows with guaranteed living benefits.**
 
-![Status](https://img.shields.io/badge/status-v0.3.1-blue)
+![Status](https://img.shields.io/badge/status-v0.4.0-blue)
 ![Python](https://img.shields.io/badge/python-3.10%2B-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
 [![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://insurance-ai-toolkit.streamlit.app)
@@ -31,8 +31,8 @@ Interactive Jupyter notebooks explain the math behind the toolkit:
 
 | Notebook | Topic | Open in Colab |
 |----------|-------|---------------|
-| [01_reserves_vm21.ipynb](notebooks/01_reserves_vm21.ipynb) | VM-21 CTE70 Reserve Calculation | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/brandonmbehring-dev/insurance-ai-toolkit/blob/main/notebooks/01_reserves_vm21.ipynb) |
-| [02_behavior_lapse.ipynb](notebooks/02_behavior_lapse.ipynb) | Dynamic Lapse Rate Modeling | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/brandonmbehring-dev/insurance-ai-toolkit/blob/main/notebooks/02_behavior_lapse.ipynb) |
+| [01_reserves_vm21.ipynb](notebooks/01_reserves_vm21.ipynb) | VM-21 CTE70 Reserve Calculation | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/brandon-behring/insurance-ai-toolkit/blob/main/notebooks/01_reserves_vm21.ipynb) |
+| [02_behavior_lapse.ipynb](notebooks/02_behavior_lapse.ipynb) | Dynamic Lapse Rate Modeling | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/brandon-behring/insurance-ai-toolkit/blob/main/notebooks/02_behavior_lapse.ipynb) |
 
 **Topics covered:**
 - Monte Carlo simulation for reserve estimation
@@ -70,7 +70,7 @@ brew install poppler
 sudo apt-get install poppler-utils
 
 # Clone and install
-git clone https://github.com/brandonmbehring-dev/insurance-ai-toolkit.git
+git clone https://github.com/brandon-behring/insurance-ai-toolkit.git
 cd insurance_ai_toolkit
 pip install -e .
 ```
@@ -239,7 +239,7 @@ ANTHROPIC_API_KEY=sk-... insurance-ai underwriting --online
 ### Install for Development
 
 ```bash
-git clone https://github.com/brandonmbehring-dev/insurance-ai-toolkit
+git clone https://github.com/brandon-behring/insurance-ai-toolkit
 cd insurance_ai_toolkit
 
 # Install in editable mode with dev dependencies
@@ -337,12 +337,20 @@ Demonstrates **regulatory calculation concepts** (VM-21/VM-22). **NOT FOR PRODUC
 - Yield curve chart in sidebar
 - 24-hour caching with manual refresh
 
-### ✅ v0.3.1 (Current)
+### ✅ v0.3.1
 - **Educational Jupyter notebooks** with Google Colab support
 - VM-21 CTE70 deep dive notebook
 - Dynamic lapse modeling notebook
 
+### ✅ v0.4.0 (Current)
+- **Bulk Policy Upload** - CSV upload → batch processing → cohort summary
+- **Custom Scenario Builder** - Interactive stress testing with presets (2008 Crisis, March 2020, etc.)
+- **Excel Export** - Multi-sheet .xlsx workbooks for actuarial workflows
+- **Quick Stress Test** - Sidebar widget for rapid scenario analysis
+
 ### 🔮 Future
+- REST API endpoints
+- Audit logging
 - Multi-user authentication
 - Production deployment patterns (AWS, K8s)
 - PyPI publishing
@@ -381,6 +389,6 @@ For detailed design decisions, see:
 ---
 
 **Last Updated:** 2025-12-17
-**Version:** v0.3.1
+**Version:** v0.4.0
 **Status:** Live on Streamlit Cloud
 **Maintained By:** [Brandon Behring](https://www.linkedin.com/in/brandon-behring/)
