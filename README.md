@@ -2,6 +2,7 @@
 
 **Agentic AI system for automating Variable Annuity (VA), Fixed Index Annuity (FIA), and Registered Index-Linked Annuity (RILA) workflows with guaranteed living benefits.**
 
+[![Tests](https://github.com/brandon-behring/insurance_ai_toolkit/actions/workflows/tests.yml/badge.svg)](https://github.com/brandon-behring/insurance_ai_toolkit/actions/workflows/tests.yml)
 ![Status](https://img.shields.io/badge/status-v0.4.0-blue)
 ![Python](https://img.shields.io/badge/python-3.10%2B-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
@@ -383,7 +384,7 @@ MIT License – See LICENSE file
 
 For detailed design decisions, see:
 - `docs/GLOSSARY.md` – Insurance & actuarial terminology
-- `docs/ARCHITECTURE.md` – System design (coming soon)
+- `docs/ARCHITECTURE.md` – System design and crew architecture
 - `docs/plans/InsuranceAI_Toolkit_8Week_Plan.md` – 8-week implementation roadmap
 
 ---
