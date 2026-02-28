@@ -1,15 +1,17 @@
 """
-CSV and PDF Export Components for Streamlit UI.
+CSV, Excel, and PDF Export Components for Streamlit UI.
 
 Provides export functionality for crew results:
 - Individual crew CSV exports
 - All-in-one combined CSV export
+- Multi-sheet Excel workbook export
 - PDF report generation (future)
 
 Usage:
     from insurance_ai.web.components.export import (
         export_underwriting_csv,
         export_all_crews_csv,
+        export_all_crews_excel,
         render_download_button,
     )
 """
@@ -19,6 +21,7 @@ import io
 from datetime import datetime
 from typing import Any, Dict, List, Optional
 
+import pandas as pd
 import streamlit as st
 
 
@@ -384,15 +387,257 @@ def render_all_exports_section() -> None:
     """
     Render combined export section for dashboard.
 
-    Shows "Download All Results" button when workflow has been run.
+    Shows "Download All Results" buttons (CSV and Excel) when workflow has been run.
     """
     if st.session_state.get("underwriting_status") is None:
         return
 
     st.markdown("### 📥 Export All Results")
 
-    csv_data = export_all_crews_csv()
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    filename = f"insurance_ai_analysis_{timestamp}.csv"
 
-    render_download_button(csv_data, filename, "Download Complete Analysis")
+    col1, col2 = st.columns(2)
+
+    with col1:
+        csv_data = export_all_crews_csv()
+        csv_filename = f"insurance_ai_analysis_{timestamp}.csv"
+        render_download_button(csv_data, csv_filename, "Download CSV")
+
+    with col2:
+        excel_data = export_all_crews_excel()
+        if excel_data:
+            excel_filename = f"insurance_ai_analysis_{timestamp}.xlsx"
+            render_download_button(
+                excel_data,
+                excel_filename,
+                "Download Excel",
+                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            )
+
+
+def export_all_crews_excel() -> Optional[bytes]:
+    """
+    Export all crew results to a multi-sheet Excel workbook.
+
+    Sheets:
+    - Summary: Key metrics from all crews
+    - Underwriting: Detailed underwriting results
+    - Reserves: Reserve analysis with VM-21 metrics
+    - Hedging: Greeks and hedge recommendations
+    - Behavior: Lapse and withdrawal analysis
+    - Scenarios: Scenario comparison matrix
+
+    Returns:
+        Excel file bytes or None if openpyxl not available
+    """
+    try:
+        from openpyxl.utils.dataframe import dataframe_to_rows
+    except ImportError:
+        st.warning("Excel export requires openpyxl. Install with: pip install openpyxl")
+        return None
+
+    # Collect data from session state
+    uw = st.session_state.get("underwriting_result", {})
+    res = st.session_state.get("reserve_result", {})
+    hdg = st.session_state.get("hedging_result", {})
+    beh = st.session_state.get("behavior_result", {})
+
+    # Create Excel buffer
+    output = io.BytesIO()
+
+    with pd.ExcelWriter(output, engine="openpyxl") as writer:
+        # Sheet 1: Summary
+        summary_data = {
+            "Metric": [
+                "Report Generated",
+                "Approval Decision",
+                "Risk Class",
+                "CTE70 Reserve",
+                "Reserve Ratio",
+                "Delta",
+                "Hedge Action",
+                "Dynamic Lapse Rate",
+            ],
+            "Value": [
+                datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                uw.get("approval_decision", "N/A"),
+                uw.get("risk_class", "N/A"),
+                f"${res.get('cte70_reserve', 0):,.0f}" if res else "N/A",
+                f"{res.get('cte70_reserve', 0) / res.get('account_value', 1):.1%}" if res.get("account_value") else "N/A",
+                f"{hdg.get('delta', 0):.4f}" if hdg else "N/A",
+                hdg.get("hedge_action", "N/A"),
+                f"{beh.get('dynamic_lapse_rate', 0):.2%}" if beh else "N/A",
+            ],
+        }
+        pd.DataFrame(summary_data).to_excel(writer, sheet_name="Summary", index=False)
+
+        # Sheet 2: Underwriting
+        if uw:
+            uw_data = {
+                "Field": ["Policy ID", "Approval Decision", "Risk Class", "Confidence Score", "Extraction Confidence"],
+                "Value": [
+                    uw.get("policy_id", "N/A"),
+                    uw.get("approval_decision", "N/A"),
+                    uw.get("risk_class", "N/A"),
+                    f"{uw.get('confidence_score', 0):.2%}",
+                    f"{uw.get('extraction_confidence', 0):.2%}",
+                ],
+            }
+            pd.DataFrame(uw_data).to_excel(writer, sheet_name="Underwriting", index=False)
+
+        # Sheet 3: Reserves
+        if res:
+            res_data = {
+                "Field": ["Account Value", "Benefit Base", "CTE70 Reserve", "Mean Reserve", "Scenarios", "Tail Ratio"],
+                "Value": [
+                    f"${res.get('account_value', 0):,.0f}",
+                    f"${res.get('benefit_base', res.get('account_value', 0)):,.0f}",
+                    f"${res.get('cte70_reserve', 0):,.0f}",
+                    f"${res.get('avg_reserve', 0):,.0f}",
+                    f"{res.get('num_scenarios', 0):,}",
+                    f"{res.get('cte70_reserve', 0) / res.get('avg_reserve', 1):.3f}" if res.get("avg_reserve") else "N/A",
+                ],
+            }
+            pd.DataFrame(res_data).to_excel(writer, sheet_name="Reserves", index=False)
+
+        # Sheet 4: Hedging
+        if hdg:
+            hdg_data = {
+                "Greek": ["Delta", "Gamma", "Vega", "Theta", "Rho"],
+                "Value": [
+                    hdg.get("delta", 0),
+                    hdg.get("gamma", 0),
+                    hdg.get("vega", 0),
+                    hdg.get("theta", 0),
+                    hdg.get("rho", 0),
+                ],
+                "Description": [
+                    "Sensitivity to underlying price",
+                    "Rate of change of delta",
+                    "Sensitivity to volatility",
+                    "Time decay",
+                    "Sensitivity to interest rates",
+                ],
+            }
+            pd.DataFrame(hdg_data).to_excel(writer, sheet_name="Hedging", index=False)
+
+            # Add hedge recommendation
+            hedge_rec = pd.DataFrame({
+                "Hedge Recommendation": [
+                    f"Action: {hdg.get('hedge_action', 'N/A')}",
+                    f"Cost: ${hdg.get('hedge_cost', 0):,.0f}",
+                    f"Delta Reduction: {hdg.get('delta_reduction', 0):.1%}",
+                    f"Vega Reduction: {hdg.get('vega_reduction', 0):.1%}",
+                ]
+            })
+            hedge_rec.to_excel(writer, sheet_name="Hedge_Recommendation", index=False)
+
+        # Sheet 5: Behavior
+        if beh:
+            beh_data = {
+                "Field": [
+                    "Moneyness",
+                    "Base Lapse Rate",
+                    "Dynamic Lapse Rate",
+                    "Annual Withdrawal Rate",
+                    "Annual Withdrawal ($)",
+                    "Life Expectancy (Years)",
+                ],
+                "Value": [
+                    f"{beh.get('moneyness', 0):.3f}",
+                    f"{beh.get('base_lapse_rate', 0):.2%}",
+                    f"{beh.get('dynamic_lapse_rate', 0):.2%}",
+                    f"{beh.get('annual_withdrawal_rate', 0):.2%}",
+                    f"${beh.get('annual_withdrawal_dollars', 0):,.0f}",
+                    f"{beh.get('life_expectancy_years', 0):.1f}",
+                ],
+            }
+            pd.DataFrame(beh_data).to_excel(writer, sheet_name="Behavior", index=False)
+
+        # Sheet 6: Scenarios (if available)
+        scenarios_data = [
+            {"ID": "001_itm", "Label": "In-The-Money", "Moneyness": 1.286, "CTE70": 58000, "Lapse": 0.03},
+            {"ID": "002_otm", "Label": "Out-The-Money", "Moneyness": 0.800, "CTE70": 72000, "Lapse": 0.18},
+            {"ID": "003_atm", "Label": "At-The-Money", "Moneyness": 1.000, "CTE70": 65000, "Lapse": 0.08},
+            {"ID": "004_stress", "Label": "High Withdrawal", "Moneyness": 0.750, "CTE70": 85000, "Lapse": 0.22},
+        ]
+        pd.DataFrame(scenarios_data).to_excel(writer, sheet_name="Scenarios", index=False)
+
+    return output.getvalue()
+
+
+def export_scenario_comparison_excel(
+    base_result: Dict[str, Any],
+    stressed_result: Dict[str, Any],
+) -> Optional[bytes]:
+    """
+    Export scenario builder comparison to Excel.
+
+    Args:
+        base_result: Base scenario results
+        stressed_result: Stressed scenario results
+
+    Returns:
+        Excel file bytes
+    """
+    try:
+        output = io.BytesIO()
+
+        with pd.ExcelWriter(output, engine="openpyxl") as writer:
+            # Comparison table
+            comparison = pd.DataFrame({
+                "Metric": [
+                    "Account Value",
+                    "CTE70 Reserve",
+                    "Reserve Ratio",
+                    "Moneyness",
+                    "Dynamic Lapse Rate",
+                    "Volatility",
+                    "Interest Rate",
+                ],
+                "Base Case": [
+                    f"${base_result.get('account_value', 0):,.0f}",
+                    f"${base_result.get('cte70_reserve', 0):,.0f}",
+                    f"{base_result.get('reserve_ratio', 0):.1%}",
+                    f"{base_result.get('moneyness', 0):.3f}",
+                    f"{base_result.get('dynamic_lapse_rate', 0):.2%}",
+                    f"{base_result.get('volatility', 0.20):.0%}",
+                    f"{base_result.get('interest_rate', 0.04):.2%}",
+                ],
+                "Stressed": [
+                    f"${stressed_result.get('account_value', 0):,.0f}",
+                    f"${stressed_result.get('cte70_reserve', 0):,.0f}",
+                    f"{stressed_result.get('reserve_ratio', 0):.1%}",
+                    f"{stressed_result.get('moneyness', 0):.3f}",
+                    f"{stressed_result.get('dynamic_lapse_rate', 0):.2%}",
+                    f"{stressed_result.get('volatility', 0.20):.0%}",
+                    f"{stressed_result.get('interest_rate', 0.04):.2%}",
+                ],
+                "Delta": [
+                    f"{((stressed_result.get('account_value', 0) / base_result.get('account_value', 1)) - 1) * 100:+.1f}%",
+                    f"{((stressed_result.get('cte70_reserve', 0) / base_result.get('cte70_reserve', 1)) - 1) * 100:+.1f}%",
+                    f"{((stressed_result.get('reserve_ratio', 0) / base_result.get('reserve_ratio', 1)) - 1) * 100:+.1f}%",
+                    f"{((stressed_result.get('moneyness', 0) / base_result.get('moneyness', 1)) - 1) * 100:+.1f}%",
+                    f"{((stressed_result.get('dynamic_lapse_rate', 0) / base_result.get('dynamic_lapse_rate', 1)) - 1) * 100:+.1f}%",
+                    "—",
+                    "—",
+                ],
+            })
+            comparison.to_excel(writer, sheet_name="Comparison", index=False)
+
+            # Stress parameters
+            stress_params = pd.DataFrame({
+                "Parameter": ["Equity Shock", "Rate Shock", "Vol Shock", "Lapse Multiplier"],
+                "Value": [
+                    f"{stressed_result.get('equity_shock_pct', 0):+.0f}%",
+                    f"{stressed_result.get('rate_shock_bps', 0):+d} bps",
+                    f"{stressed_result.get('vol_shock_pct', 0):+.0f}%",
+                    f"{stressed_result.get('lapse_multiplier', 1.0):.1f}x",
+                ],
+            })
+            stress_params.to_excel(writer, sheet_name="Stress_Parameters", index=False)
+
+        return output.getvalue()
+
+    except ImportError:
+        return None

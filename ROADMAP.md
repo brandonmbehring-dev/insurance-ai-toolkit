@@ -16,7 +16,7 @@ Phase 3: Real Integration  █████████████████�
 Phase 4: Data & Export     ████████████████████ 100% ✅
 Phase 5: Market Data       ████████████████████ 100% ✅
 Phase 6: Educational       ████████████████████ 100% ✅
-Phase 7: Production        ░░░░░░░░░░░░░░░░░░░░   0%
+Phase 7: User Features     ████████████████████ 100% ✅
 Phase 8: Distribution      ░░░░░░░░░░░░░░░░░░░░   0%
 ```
 
@@ -31,7 +31,7 @@ Phase 8: Distribution      ░░░░░░░░░░░░░░░░░�
 | **v0.2.1** ✅ | Done | CSV/PDF export + mode toggle |
 | **v0.3.0** ✅ | Done | Market data integration (FRED API) |
 | **v0.3.1** ✅ | Done | Jupyter notebooks (VM-21, Behavior) |
-| **v0.4.0** | Week 4 | Final polish |
+| **v0.4.0** ✅ | Done | User features (Bulk upload, Scenario builder, Excel) |
 | **v1.0.0** | Week 8 | PyPI + Docker Hub |
 
 ---
@@ -137,18 +137,18 @@ Phase 8: Distribution      ░░░░░░░░░░░░░░░░░�
 
 ---
 
-## Phase 7: Production Hardening (v0.4.0)
+## Phase 7: User Features (v0.4.0) ✅ COMPLETE
 
-**Target**: Week 6-8
-**Goal**: Enterprise-ready features
+**Completed**: December 2024
+**Goal**: Real-world user features
 
-| Task | Priority | Effort |
-|------|----------|--------|
-| Mobile responsiveness | P1 | 1 day |
-| User authentication | P1 | 2-3 days |
-| Audit logging | P1 | 1 day |
-| Role-based access | P2 | 1 day |
-| Rate limiting | P2 | 4 hours |
+| Task | Status |
+|------|--------|
+| Bulk Policy Upload (CSV → batch processing) | ✅ Done |
+| Custom Scenario Builder (stress testing) | ✅ Done |
+| Excel Export (.xlsx multi-sheet) | ✅ Done |
+| Quick Stress Test in sidebar | ✅ Done |
+| Tabbed dashboard (Single vs Bulk) | ✅ Done |
 
 ---
 

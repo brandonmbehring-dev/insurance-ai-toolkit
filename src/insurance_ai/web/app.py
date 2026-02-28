@@ -17,9 +17,11 @@ import streamlit as st
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
 from insurance_ai.web import __version__
+from insurance_ai.web.components.bulk_upload import render_bulk_upload_section
 from insurance_ai.web.components.export import render_all_exports_section
 from insurance_ai.web.components.market_data import render_market_sidebar
 from insurance_ai.web.components.pdf_report import render_report_download_section
+from insurance_ai.web.components.scenario_builder import render_scenario_builder_mini
 from insurance_ai.web.config import (
     EXECUTION_MODE,
     GuardianTheme,
@@ -178,6 +180,10 @@ def render_sidebar() -> None:
         st.markdown("---")
         render_market_sidebar()
 
+        # ===== QUICK STRESS TEST =====
+        st.markdown("---")
+        render_scenario_builder_mini()
+
 
 # ===== MAIN CONTENT AREA =====
 
@@ -193,117 +199,124 @@ def render_main_dashboard() -> None:
         display_workflow_summary,
     )
 
-    st.markdown("## 📈 Workflow Dashboard")
+    # Tabbed interface: Single Policy vs Bulk Upload
+    tab1, tab2 = st.tabs(["📊 Single Policy Analysis", "📁 Bulk Policy Upload"])
 
-    # ===== MODE & SCENARIO INFO =====
-    col1, col2 = st.columns(2)
-    with col1:
-        display_mode_info()
-    with col2:
-        display_scenario_info()
+    with tab2:
+        render_bulk_upload_section()
 
-    st.markdown("---")
+    with tab1:
+        st.markdown("## 📈 Workflow Dashboard")
 
-    # ===== WORKFLOW STATUS =====
-    st.markdown("### Crew Status")
-    display_workflow_status_badges()
+        # ===== MODE & SCENARIO INFO =====
+        col1, col2 = st.columns(2)
+        with col1:
+            display_mode_info()
+        with col2:
+            display_scenario_info()
 
-    st.markdown("---")
+        st.markdown("---")
 
-    # ===== APPROVAL DECISION =====
-    display_approval_decision()
+        # ===== WORKFLOW STATUS =====
+        st.markdown("### Crew Status")
+        display_workflow_status_badges()
 
-    # ===== WORKFLOW SUMMARY =====
-    st.markdown("### Execution Summary")
-    display_workflow_summary()
+        st.markdown("---")
 
-    st.markdown("---")
+        # ===== APPROVAL DECISION =====
+        display_approval_decision()
 
-    # ===== ERROR MESSAGES (if any) =====
-    display_execution_errors()
+        # ===== WORKFLOW SUMMARY =====
+        st.markdown("### Execution Summary")
+        display_workflow_summary()
 
-    # ===== VALIDATION WARNINGS =====
-    display_validation_warnings()
+        st.markdown("---")
 
-    st.markdown("---")
+        # ===== ERROR MESSAGES (if any) =====
+        display_execution_errors()
 
-    # ===== RESULTS PANELS =====
-    st.markdown("### 📊 Detailed Results")
+        # ===== VALIDATION WARNINGS =====
+        display_validation_warnings()
 
-    # Underwriting Results
-    uw_result = st.session_state.get("underwriting_result")
-    if uw_result:
-        with st.expander("✅ Underwriting Results", expanded=False):
-            col1, col2, col3 = st.columns(3)
-            with col1:
-                st.metric("Policy ID", uw_result.get("policy_id", "—"))
-            with col2:
-                st.metric("Approval", uw_result.get("approval_decision", "—"))
-            with col3:
-                st.metric("Confidence", f"{uw_result.get('confidence_score', 0):.1%}")
+        st.markdown("---")
 
-    # Reserve Results
-    res_result = st.session_state.get("reserve_result")
-    if res_result:
-        with st.expander("✅ Reserve Calculation Results", expanded=False):
-            col1, col2 = st.columns(2)
-            with col1:
-                st.metric("Account Value", f"${res_result.get('account_value', 0):,.0f}")
-            with col2:
-                st.metric("CTE70 Reserve", f"${res_result.get('cte70_reserve', 0):,.0f}")
+        # ===== RESULTS PANELS =====
+        st.markdown("### 📊 Detailed Results")
 
-    # Behavior Results
-    beh_result = st.session_state.get("behavior_result")
-    if beh_result:
-        with st.expander("✅ Behavior Modeling Results", expanded=False):
-            col1, col2, col3 = st.columns(3)
-            with col1:
-                st.metric("Moneyness", f"{beh_result.get('moneyness', 0):.2f}")
-            with col2:
-                st.metric("Dynamic Lapse", f"{beh_result.get('dynamic_lapse_rate', 0):.1%}")
-            with col3:
-                st.metric("Probability In-Force", f"{beh_result.get('probability_in_force', 0):.1%}")
+        # Underwriting Results
+        uw_result = st.session_state.get("underwriting_result")
+        if uw_result:
+            with st.expander("✅ Underwriting Results", expanded=False):
+                col1, col2, col3 = st.columns(3)
+                with col1:
+                    st.metric("Policy ID", uw_result.get("policy_id", "—"))
+                with col2:
+                    st.metric("Approval", uw_result.get("approval_decision", "—"))
+                with col3:
+                    st.metric("Confidence", f"{uw_result.get('confidence_score', 0):.1%}")
 
-    # Hedging Results
-    hedge_result = st.session_state.get("hedging_result")
-    if hedge_result:
-        with st.expander("✅ Hedging Analysis Results", expanded=False):
-            col1, col2, col3 = st.columns(3)
-            with col1:
-                st.metric("Delta", f"{hedge_result.get('delta', 0):.2f}")
-            with col2:
-                st.metric("Vega", f"{hedge_result.get('vega', 0):.3f}")
-            with col3:
-                st.metric("Hedge Cost", f"${hedge_result.get('hedge_cost', 0):,.0f}")
+        # Reserve Results
+        res_result = st.session_state.get("reserve_result")
+        if res_result:
+            with st.expander("✅ Reserve Calculation Results", expanded=False):
+                col1, col2 = st.columns(2)
+                with col1:
+                    st.metric("Account Value", f"${res_result.get('account_value', 0):,.0f}")
+                with col2:
+                    st.metric("CTE70 Reserve", f"${res_result.get('cte70_reserve', 0):,.0f}")
 
-    st.markdown("---")
+        # Behavior Results
+        beh_result = st.session_state.get("behavior_result")
+        if beh_result:
+            with st.expander("✅ Behavior Modeling Results", expanded=False):
+                col1, col2, col3 = st.columns(3)
+                with col1:
+                    st.metric("Moneyness", f"{beh_result.get('moneyness', 0):.2f}")
+                with col2:
+                    st.metric("Dynamic Lapse", f"{beh_result.get('dynamic_lapse_rate', 0):.1%}")
+                with col3:
+                    st.metric("Probability In-Force", f"{beh_result.get('probability_in_force', 0):.1%}")
 
-    # ===== NEXT STEPS =====
-    st.markdown("### 📋 Next Steps")
+        # Hedging Results
+        hedge_result = st.session_state.get("hedging_result")
+        if hedge_result:
+            with st.expander("✅ Hedging Analysis Results", expanded=False):
+                col1, col2, col3 = st.columns(3)
+                with col1:
+                    st.metric("Delta", f"{hedge_result.get('delta', 0):.2f}")
+                with col2:
+                    st.metric("Vega", f"{hedge_result.get('vega', 0):.3f}")
+                with col3:
+                    st.metric("Hedge Cost", f"${hedge_result.get('hedge_cost', 0):,.0f}")
 
-    col1, col2 = st.columns(2)
-    with col1:
-        st.markdown("""
-        **Try Different Scenarios:**
-        - Switch between ITM/OTM/ATM scenarios in the sidebar
-        - Each scenario demonstrates different policyholder behavior
-        - Observe how reserves and lapse rates change
-        """)
+        st.markdown("---")
 
-    with col2:
-        st.markdown("""
-        **Learn More:**
-        - Check `docs/STREAMLIT_DESIGN.md` for architecture details
-        - Review fixture data in `tests/fixtures/behavior/`
-        - See implementation in `src/insurance_ai/web/`
-        """)
+        # ===== NEXT STEPS =====
+        st.markdown("### 📋 Next Steps")
 
-    # ===== EXPORT ALL RESULTS =====
-    st.markdown("---")
-    render_all_exports_section()
+        col1, col2 = st.columns(2)
+        with col1:
+            st.markdown("""
+            **Try Different Scenarios:**
+            - Switch between ITM/OTM/ATM scenarios in the sidebar
+            - Each scenario demonstrates different policyholder behavior
+            - Observe how reserves and lapse rates change
+            """)
 
-    # ===== GENERATE REPORTS =====
-    render_report_download_section()
+        with col2:
+            st.markdown("""
+            **Learn More:**
+            - Check `docs/STREAMLIT_DESIGN.md` for architecture details
+            - Review fixture data in `tests/fixtures/behavior/`
+            - See implementation in `src/insurance_ai/web/`
+            """)
+
+        # ===== EXPORT ALL RESULTS =====
+        st.markdown("---")
+        render_all_exports_section()
+
+        # ===== GENERATE REPORTS =====
+        render_report_download_section()
 
 
 # ===== FOOTER =====
