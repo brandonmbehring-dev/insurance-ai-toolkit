@@ -11,13 +11,12 @@ Usage:
     formatted_moneyness = format_moneyness(1.286) # "1.29x ITM"
 """
 
-from datetime import datetime
-from typing import Union, Optional
 import math
+from datetime import datetime
 
 
 def format_currency(
-    value: Union[int, float],
+    value: int | float,
     symbol: str = "$",
     decimals: int = 0,
 ) -> str:

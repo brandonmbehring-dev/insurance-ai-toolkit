@@ -10,8 +10,8 @@ import streamlit as st
 
 from insurance_ai.web import __version__
 from insurance_ai.web.components.export import (
-    render_crew_export_section,
     export_scenario_comparison_excel,
+    render_crew_export_section,
     render_download_button,
 )
 from insurance_ai.web.components.scenario_builder import render_scenario_builder
@@ -261,8 +261,8 @@ def render_scenarios_page() -> None:
                         "Account Value ($K)": av,
                         "Benefit Base ($K)": bb_calc,
                         "Moneyness": f"{m:.2f}",
-                        "CTE70 Reserve ($K)": f"{res/1000:.0f}",
-                        "% of AV": f"{res/av:.1%}",
+                        "CTE70 Reserve ($K)": f"{res / 1000:.0f}",
+                        "% of AV": f"{res / av:.1%}",
                     }
                 )
 
@@ -431,7 +431,9 @@ def render_scenarios_page() -> None:
 
         # ===== FOOTER =====
         st.markdown("---")
-        st.caption(f"Scenarios Crew v{__version__} | Comparison & What-If Analysis | Educational Prototype")
+        st.caption(
+            f"Scenarios Crew v{__version__} | Comparison & What-If Analysis | Educational Prototype"
+        )
 
 
 if __name__ == "__main__":

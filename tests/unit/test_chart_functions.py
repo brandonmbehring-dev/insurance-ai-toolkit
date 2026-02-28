@@ -11,10 +11,11 @@ Run with:
     pytest tests/unit/test_chart_functions.py -v
 """
 
-import pytest
-import numpy as np
 import sys
 from pathlib import Path
+
+import numpy as np
+import pytest
 
 # Add src to path
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
@@ -22,12 +23,15 @@ sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 # Try to import Plotly, but make it optional
 try:
     import plotly.graph_objects as go
+
     HAS_PLOTLY = True
 except ImportError:
     HAS_PLOTLY = False
 
 
-@pytest.mark.skipif(not HAS_PLOTLY, reason="Plotly not installed (install with: pip install -e '.[web]')")
+@pytest.mark.skipif(
+    not HAS_PLOTLY, reason="Plotly not installed (install with: pip install -e '.[web]')"
+)
 class TestChartFunctions:
     """Tests for chart rendering functions."""
 
@@ -256,8 +260,9 @@ class TestGuardianBranding:
 
     def test_colors_are_valid_hex(self):
         """Test that all colors are valid hex codes."""
-        from insurance_ai.web.components.charts import get_guardian_colors
         import re
+
+        from insurance_ai.web.components.charts import get_guardian_colors
 
         colors = get_guardian_colors()
         hex_pattern = re.compile(r"^#[0-9A-Fa-f]{6}$")
@@ -300,8 +305,7 @@ class TestChartPerformance:
 
         # Create 10 scenarios
         scenarios = {
-            f"Scenario {i}": np.random.normal(65000, 5000, 100).tolist()
-            for i in range(10)
+            f"Scenario {i}": np.random.normal(65000, 5000, 100).tolist() for i in range(10)
         }
 
         fig = plot_scenario_comparison(scenarios)

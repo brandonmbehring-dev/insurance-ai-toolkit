@@ -8,7 +8,7 @@ This agent:
 """
 
 from ..state import UnderwritingState
-from ..tools import load_mortality_table, calculate_health_adjustment
+from ..tools import calculate_health_adjustment, load_mortality_table
 
 
 def mortality_agent(state: UnderwritingState) -> UnderwritingState:
@@ -39,7 +39,7 @@ def mortality_agent(state: UnderwritingState) -> UnderwritingState:
     """
 
     # Step 1: Load base mortality table
-    mortality_table = load_mortality_table(state.gender)
+    load_mortality_table(state.gender)
 
     # Store for reference
     state.mortality_table_age = state.age

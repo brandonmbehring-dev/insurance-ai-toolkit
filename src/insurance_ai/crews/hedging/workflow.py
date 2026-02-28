@@ -12,11 +12,10 @@ Validates against:
 - Delta reduction >80% if hedging
 """
 
-from typing import Literal
-from langgraph.graph import StateGraph, START, END
+from langgraph.graph import END, START, StateGraph
 
-from .state import HedgingState, HedgeAction, InstrumentType, HedgeRecommendation, GreeksCalculation
 from . import tools
+from .state import GreeksCalculation, HedgeAction, HedgeRecommendation, HedgingState, InstrumentType
 
 
 def greeks_calculation_agent(state: HedgingState) -> HedgingState:
@@ -37,9 +36,7 @@ def greeks_calculation_agent(state: HedgingState) -> HedgingState:
     liability_delta = tools.calculate_glwb_liability_delta(
         state.liability_value, state.liability_value, S, T, r
     )
-    liability_vega = tools.calculate_glwb_liability_vega(
-        state.liability_value, T
-    )
+    liability_vega = tools.calculate_glwb_liability_vega(state.liability_value, T)
 
     state.liability_greeks = GreeksCalculation(
         delta=liability_delta,
@@ -185,10 +182,9 @@ def hedge_recommendation_agent(state: HedgingState) -> HedgingState:
 
     # Calculate delta reduction
     if state.portfolio_delta != 0:
-        state.delta_reduction_percent = (
-            abs(state.portfolio_delta_after_hedge - state.portfolio_delta)
-            / abs(state.portfolio_delta)
-        )
+        state.delta_reduction_percent = abs(
+            state.portfolio_delta_after_hedge - state.portfolio_delta
+        ) / abs(state.portfolio_delta)
     else:
         state.delta_reduction_percent = 0.0
 
@@ -238,18 +234,18 @@ def validation_agent(state: HedgingState) -> HedgingState:
     # 5. Hedge effectiveness
     if state.recommended_action == HedgeAction.BUY_PUTS:
         state.hedge_effective = state.delta_reduction_percent > 0.80
-        validation_metrics["hedge_effective"] = (
-            "PASS" if state.hedge_effective else "FAIL"
-        )
-        validation_metrics["delta_reduction"] = (
-            f"{state.delta_reduction_percent * 100:.1f}%"
-        )
+        validation_metrics["hedge_effective"] = "PASS" if state.hedge_effective else "FAIL"
+        validation_metrics["delta_reduction"] = f"{state.delta_reduction_percent * 100:.1f}%"
     else:
         validation_metrics["hedge_action"] = "HOLD"
 
     # 6. Efficiency score (0-100)
     # Based on: delta reduction + cost-benefit + greeks validity
-    delta_score = min(state.delta_reduction_percent * 100, 40) if state.recommended_action == HedgeAction.BUY_PUTS else 0
+    delta_score = (
+        min(state.delta_reduction_percent * 100, 40)
+        if state.recommended_action == HedgeAction.BUY_PUTS
+        else 0
+    )
     cost_benefit_score = min(state.cost_benefit_ratio * 20, 40)
     greeks_score = 20  # All greeks valid
 

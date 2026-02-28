@@ -15,7 +15,7 @@ Usage:
 """
 
 from dataclasses import dataclass
-from typing import Any, Dict, Optional, Tuple
+from typing import Any
 
 import streamlit as st
 
@@ -140,10 +140,10 @@ def apply_equity_shock(account_value: float, shock_pct: float) -> float:
 
 
 def apply_stress_scenario(
-    base_scenario: Dict[str, Any],
+    base_scenario: dict[str, Any],
     stress: ScenarioParameters,
     age: int = 65,
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """
     Apply stress scenario to base case and calculate all metrics.
 
@@ -194,7 +194,7 @@ def apply_stress_scenario(
     }
 
 
-def calculate_delta(base_value: float, stressed_value: float) -> Tuple[float, str]:
+def calculate_delta(base_value: float, stressed_value: float) -> tuple[float, str]:
     """
     Calculate delta and format for display.
 
@@ -207,7 +207,7 @@ def calculate_delta(base_value: float, stressed_value: float) -> Tuple[float, st
     return delta_pct, f"{delta_pct:+.1f}%"
 
 
-def render_scenario_builder() -> Optional[Dict[str, Any]]:
+def render_scenario_builder() -> dict[str, Any] | None:
     """
     Render custom scenario builder UI with sliders and presets.
 
@@ -359,32 +359,38 @@ def render_scenario_builder() -> Optional[Dict[str, Any]]:
 
     with col2:
         st.markdown("### Stressed")
-        _, av_delta = calculate_delta(base_result['account_value'], stressed_result['account_value'])
+        _, av_delta = calculate_delta(
+            base_result["account_value"], stressed_result["account_value"]
+        )
         st.metric(
             "Account Value",
             f"${stressed_result['account_value']:,.0f}",
             av_delta,
         )
-        _, res_delta = calculate_delta(base_result['cte70_reserve'], stressed_result['cte70_reserve'])
+        _, res_delta = calculate_delta(
+            base_result["cte70_reserve"], stressed_result["cte70_reserve"]
+        )
         st.metric(
             "CTE70 Reserve",
             f"${stressed_result['cte70_reserve']:,.0f}",
             res_delta,
         )
-        _, ratio_delta = calculate_delta(base_result['reserve_ratio'], stressed_result['reserve_ratio'])
+        _, ratio_delta = calculate_delta(
+            base_result["reserve_ratio"], stressed_result["reserve_ratio"]
+        )
         st.metric(
             "Reserve Ratio",
             f"{stressed_result['reserve_ratio']:.1%}",
             ratio_delta,
         )
-        _, mon_delta = calculate_delta(base_result['moneyness'], stressed_result['moneyness'])
+        _, mon_delta = calculate_delta(base_result["moneyness"], stressed_result["moneyness"])
         st.metric(
             "Moneyness",
             f"{stressed_result['moneyness']:.3f}",
             mon_delta,
         )
         _, lapse_delta = calculate_delta(
-            base_result['dynamic_lapse_rate'], stressed_result['dynamic_lapse_rate']
+            base_result["dynamic_lapse_rate"], stressed_result["dynamic_lapse_rate"]
         )
         st.metric(
             "Dynamic Lapse",
@@ -394,14 +400,14 @@ def render_scenario_builder() -> Optional[Dict[str, Any]]:
 
     with col3:
         st.markdown("### Delta Impact")
-        av_pct, _ = calculate_delta(base_result['account_value'], stressed_result['account_value'])
+        av_pct, _ = calculate_delta(base_result["account_value"], stressed_result["account_value"])
         st.metric("AV Change", f"{av_pct:+.1f}%")
 
-        res_pct, _ = calculate_delta(base_result['cte70_reserve'], stressed_result['cte70_reserve'])
+        res_pct, _ = calculate_delta(base_result["cte70_reserve"], stressed_result["cte70_reserve"])
         st.metric("Reserve Change", f"{res_pct:+.1f}%")
 
         # Capital impact
-        capital_impact = stressed_result['cte70_reserve'] - base_result['cte70_reserve']
+        capital_impact = stressed_result["cte70_reserve"] - base_result["cte70_reserve"]
         st.metric(
             "Additional Capital",
             f"${capital_impact:+,.0f}",
@@ -419,24 +425,34 @@ def render_scenario_builder() -> Optional[Dict[str, Any]]:
     insights = []
 
     # Reserve sensitivity
-    res_pct, _ = calculate_delta(base_result['cte70_reserve'], stressed_result['cte70_reserve'])
+    res_pct, _ = calculate_delta(base_result["cte70_reserve"], stressed_result["cte70_reserve"])
     if abs(res_pct) > 20:
-        insights.append(f"Reserve change of {res_pct:+.1f}% indicates **high sensitivity** to this stress combination.")
+        insights.append(
+            f"Reserve change of {res_pct:+.1f}% indicates **high sensitivity** to this stress combination."
+        )
 
     # Vol sensitivity
     if new_stress.vol_shock_pct != 0:
-        vol_impact = (stressed_result['volatility'] - base_result['volatility']) / base_result['volatility']
-        insights.append(f"Volatility moved from {base_result['volatility']:.0%} to {stressed_result['volatility']:.0%}.")
+        (stressed_result["volatility"] - base_result["volatility"]) / base_result["volatility"]
+        insights.append(
+            f"Volatility moved from {base_result['volatility']:.0%} to {stressed_result['volatility']:.0%}."
+        )
 
     # Moneyness shift
-    if stressed_result['moneyness'] < 0.9 and base_result['moneyness'] >= 0.9:
-        insights.append("Scenario pushes policy **out-of-the-money** (moneyness < 0.9), significantly increasing lapse risk.")
-    elif stressed_result['moneyness'] > 1.1 and base_result['moneyness'] <= 1.1:
-        insights.append("Scenario pushes policy **deep-in-the-money** (moneyness > 1.1), reducing lapse risk.")
+    if stressed_result["moneyness"] < 0.9 and base_result["moneyness"] >= 0.9:
+        insights.append(
+            "Scenario pushes policy **out-of-the-money** (moneyness < 0.9), significantly increasing lapse risk."
+        )
+    elif stressed_result["moneyness"] > 1.1 and base_result["moneyness"] <= 1.1:
+        insights.append(
+            "Scenario pushes policy **deep-in-the-money** (moneyness > 1.1), reducing lapse risk."
+        )
 
     # Lapse rate warning
-    if stressed_result['dynamic_lapse_rate'] > 0.20:
-        insights.append(f"Dynamic lapse rate of {stressed_result['dynamic_lapse_rate']:.1%} exceeds 20% threshold — significant persistency risk.")
+    if stressed_result["dynamic_lapse_rate"] > 0.20:
+        insights.append(
+            f"Dynamic lapse rate of {stressed_result['dynamic_lapse_rate']:.1%} exceeds 20% threshold — significant persistency risk."
+        )
 
     if insights:
         for insight in insights:

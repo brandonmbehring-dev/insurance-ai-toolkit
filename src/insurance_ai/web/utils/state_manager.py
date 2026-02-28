@@ -13,8 +13,6 @@ Handles errors gracefully with warnings instead of crashes.
 import json
 import logging
 from datetime import datetime
-from pathlib import Path
-from typing import Optional
 
 try:
     import streamlit as st
@@ -23,30 +21,42 @@ except ImportError:
     st = None
 
 # Real crew imports (v0.2.0)
-from insurance_ai.crews.underwriting import (
-    UnderwritingState,
-    run_underwriting_crew as real_underwriting_crew,
-    ProductType as UWProductType,
-    RiskClass,
-)
-from insurance_ai.crews.reserve import (
-    ReserveState,
-    run_reserve_crew as real_reserve_crew,
-    ProductType as RSProductType,
-)
 from insurance_ai.crews.behavior import (
     BehaviorState,
+)
+from insurance_ai.crews.behavior import (
     run_behavior_crew as real_behavior_crew,
 )
 from insurance_ai.crews.hedging import (
     HedgingState,
+)
+from insurance_ai.crews.hedging import (
     run_hedging_crew as real_hedging_crew,
+)
+from insurance_ai.crews.reserve import (
+    ProductType as RSProductType,
+)
+from insurance_ai.crews.reserve import (
+    ReserveState,
+)
+from insurance_ai.crews.reserve import (
+    run_reserve_crew as real_reserve_crew,
+)
+from insurance_ai.crews.underwriting import (
+    ProductType as UWProductType,
+)
+from insurance_ai.crews.underwriting import (
+    UnderwritingState,
+)
+from insurance_ai.crews.underwriting import (
+    run_underwriting_crew as real_underwriting_crew,
 )
 
 logger = logging.getLogger(__name__)
 
 
 # ===== SESSION STATE INITIALIZATION =====
+
 
 def initialize_session_state() -> None:
     """
@@ -106,6 +116,7 @@ def initialize_session_state() -> None:
 
 # ===== SCENARIO CHANGE DETECTION =====
 
+
 def check_scenario_changed() -> bool:
     """
     Detect if user changed scenario and reset state if so.
@@ -149,6 +160,7 @@ def check_scenario_changed() -> bool:
 
 
 # ===== FIXTURE LOADING =====
+
 
 def _cache_decorator(func):
     """Apply Streamlit cache decorator only when in Streamlit context."""
@@ -198,14 +210,14 @@ def load_scenario_fixture(scenario_id: str) -> dict:
 
     if scenario_id not in all_fixtures:
         raise ValueError(
-            f"Scenario '{scenario_id}' not found. "
-            f"Available: {list(all_fixtures.keys())}"
+            f"Scenario '{scenario_id}' not found. Available: {list(all_fixtures.keys())}"
         )
 
     return all_fixtures[scenario_id]
 
 
 # ===== FIXTURE-TO-STATE CONVERSION FUNCTIONS =====
+
 
 def fixture_to_underwriting_state(fixture: dict) -> UnderwritingState:
     """
@@ -295,6 +307,7 @@ def fixture_to_hedging_state(fixture: dict) -> HedgingState:
 
 # ===== CREW EXECUTION (REAL IMPLEMENTATIONS v0.2.0) =====
 
+
 def run_underwriting_crew(fixture: dict, mode: str = "offline") -> dict:
     """
     Run Underwriting Crew (REAL implementation v0.2.0).
@@ -338,7 +351,7 @@ def run_underwriting_crew(fixture: dict, mode: str = "offline") -> dict:
 def run_reserve_crew(
     underwriting_result: dict,
     mode: str = "offline",
-    fixture: Optional[dict] = None,
+    fixture: dict | None = None,
 ) -> dict:
     """
     Run Reserve Crew (REAL implementation v0.2.0).
@@ -373,7 +386,7 @@ def run_reserve_crew(
 def run_behavior_crew(
     underwriting_result: dict,
     mode: str = "offline",
-    fixture: Optional[dict] = None,
+    fixture: dict | None = None,
 ) -> dict:
     """
     Run Behavior Crew (REAL implementation v0.2.0).
@@ -409,7 +422,7 @@ def run_behavior_crew(
 def run_hedging_crew(
     reserve_result: dict,
     mode: str = "offline",
-    fixture: Optional[dict] = None,
+    fixture: dict | None = None,
 ) -> dict:
     """
     Run Hedging Crew (REAL implementation v0.2.0).
@@ -459,6 +472,7 @@ def run_hedging_crew(
 
 # ===== MAIN ORCHESTRATION FUNCTION =====
 
+
 def run_workflow(scenario_id: str, mode: str = "offline") -> None:
     """
     Execute the full workflow: UW → (Reserve + Behavior parallel) → Hedging.
@@ -490,11 +504,13 @@ def run_workflow(scenario_id: str, mode: str = "offline") -> None:
     except Exception as e:
         logger.error(f"Failed to load fixture: {e}")
         st.session_state.workflow_status = "error"
-        st.session_state.execution_errors.append({
-            "crew": "fixture_loader",
-            "error": str(e),
-            "timestamp": datetime.now().isoformat(),
-        })
+        st.session_state.execution_errors.append(
+            {
+                "crew": "fixture_loader",
+                "error": str(e),
+                "timestamp": datetime.now().isoformat(),
+            }
+        )
         return
 
     # Set status to running
@@ -507,8 +523,8 @@ def run_workflow(scenario_id: str, mode: str = "offline") -> None:
         uw_result = run_underwriting_crew(fixture, mode)
         st.session_state.underwriting_result = uw_result
         st.session_state.underwriting_status = "success"
-        st.session_state.underwriting_approval = (
-            uw_result.get("approval_decision", "").startswith("APPROVED")
+        st.session_state.underwriting_approval = uw_result.get("approval_decision", "").startswith(
+            "APPROVED"
         )
         logger.info(f"Underwriting: {st.session_state.underwriting_approval}")
 
@@ -516,11 +532,13 @@ def run_workflow(scenario_id: str, mode: str = "offline") -> None:
         logger.error(f"Underwriting crew failed: {e}")
         st.session_state.underwriting_status = "failed"
         st.session_state.underwriting_approval = False
-        st.session_state.execution_errors.append({
-            "crew": "underwriting",
-            "error": str(e),
-            "timestamp": datetime.now().isoformat(),
-        })
+        st.session_state.execution_errors.append(
+            {
+                "crew": "underwriting",
+                "error": str(e),
+                "timestamp": datetime.now().isoformat(),
+            }
+        )
         st.session_state.workflow_status = "error"
         # Early exit - underwriting gates everything
         st.session_state.reserve_status = "skipped"
@@ -545,37 +563,37 @@ def run_workflow(scenario_id: str, mode: str = "offline") -> None:
 
     # Run Reserve Crew
     try:
-        reserve_result = run_reserve_crew(
-            st.session_state.underwriting_result, mode, fixture
-        )
+        reserve_result = run_reserve_crew(st.session_state.underwriting_result, mode, fixture)
         st.session_state.reserve_result = reserve_result
         st.session_state.reserve_status = "success"
         logger.info("Reserve crew completed successfully")
     except Exception as e:
         logger.error(f"Reserve crew failed: {e}")
         st.session_state.reserve_status = "failed"
-        st.session_state.execution_errors.append({
-            "crew": "reserve",
-            "error": str(e),
-            "timestamp": datetime.now().isoformat(),
-        })
+        st.session_state.execution_errors.append(
+            {
+                "crew": "reserve",
+                "error": str(e),
+                "timestamp": datetime.now().isoformat(),
+            }
+        )
 
     # Run Behavior Crew
     try:
-        behavior_result = run_behavior_crew(
-            st.session_state.underwriting_result, mode, fixture
-        )
+        behavior_result = run_behavior_crew(st.session_state.underwriting_result, mode, fixture)
         st.session_state.behavior_result = behavior_result
         st.session_state.behavior_status = "success"
         logger.info("Behavior crew completed successfully")
     except Exception as e:
         logger.error(f"Behavior crew failed: {e}")
         st.session_state.behavior_status = "failed"
-        st.session_state.execution_errors.append({
-            "crew": "behavior",
-            "error": str(e),
-            "timestamp": datetime.now().isoformat(),
-        })
+        st.session_state.execution_errors.append(
+            {
+                "crew": "behavior",
+                "error": str(e),
+                "timestamp": datetime.now().isoformat(),
+            }
+        )
 
     # ===== 4. RUN HEDGING (if Reserve succeeded) =====
 
@@ -587,11 +605,13 @@ def run_workflow(scenario_id: str, mode: str = "offline") -> None:
         except Exception as e:
             logger.error(f"Hedging crew failed: {e}")
             st.session_state.hedging_status = "failed"
-            st.session_state.execution_errors.append({
-                "crew": "hedging",
-                "error": str(e),
-                "timestamp": datetime.now().isoformat(),
-            })
+            st.session_state.execution_errors.append(
+                {
+                    "crew": "hedging",
+                    "error": str(e),
+                    "timestamp": datetime.now().isoformat(),
+                }
+            )
     else:
         # Reserve failed, skip hedging
         st.session_state.hedging_status = "skipped"
@@ -604,6 +624,7 @@ def run_workflow(scenario_id: str, mode: str = "offline") -> None:
 
 
 # ===== WORKFLOW STATUS HELPERS =====
+
 
 def get_workflow_status() -> str:
     """Get current workflow status."""
@@ -629,7 +650,7 @@ def has_errors() -> bool:
     return len(st.session_state.get("execution_errors", [])) > 0
 
 
-def get_crew_status(crew_name: str) -> Optional[str]:
+def get_crew_status(crew_name: str) -> str | None:
     """
     Get status of a specific crew.
 
@@ -646,7 +667,7 @@ def get_crew_status(crew_name: str) -> Optional[str]:
     return st.session_state.get(status_key)
 
 
-def get_crew_result(crew_name: str) -> Optional[dict]:
+def get_crew_result(crew_name: str) -> dict | None:
     """
     Get result of a specific crew.
 

@@ -75,7 +75,7 @@ def render_underwriting_page() -> None:
     metric_col1, metric_col2, metric_col3, metric_col4 = st.columns(4)
 
     with metric_col1:
-        fixture = st.session_state.get("current_fixture", {})
+        st.session_state.get("current_fixture", {})
         st.metric("Policy ID", uw_result.get("policy_id", "—")[-8:])  # Last 8 chars
 
     with metric_col2:
@@ -91,7 +91,7 @@ def render_underwriting_page() -> None:
     st.markdown("---")
     st.markdown("### 📄 Extracted Medical Data")
 
-    fixture = st.session_state.get("current_fixture", {})
+    st.session_state.get("current_fixture", {})
 
     with st.expander("Applicant Details", expanded=True):
         col1, col2, col3 = st.columns(3)
@@ -163,7 +163,7 @@ def render_underwriting_page() -> None:
     col1, col2, col3, col4, col5 = st.columns(5)
     cols = [col1, col2, col3, col4, col5]
 
-    for (field, conf), col in zip(confidence_data.items(), cols):
+    for (field, conf), col in zip(confidence_data.items(), cols, strict=False):
         with col:
             st.metric(field, f"{conf:.0%}")
 

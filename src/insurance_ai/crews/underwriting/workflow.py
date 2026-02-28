@@ -13,15 +13,16 @@ Conditional routing:
 """
 
 from typing import Literal
-from langgraph.graph import StateGraph, START, END
 
-from .state import UnderwritingState, RiskClass
+from langgraph.graph import END, START, StateGraph
+
 from .agents import (
-    extraction_agent,
-    validation_agent,
-    mortality_agent,
     approval_agent,
+    extraction_agent,
+    mortality_agent,
+    validation_agent,
 )
+from .state import RiskClass, UnderwritingState
 
 
 def build_underwriting_crew() -> StateGraph:
@@ -153,15 +154,9 @@ def run_underwriting_crew(state: UnderwritingState) -> UnderwritingState:
         )
         state.risk_class = RiskClass(result_dict.get("risk_class", state.risk_class.value))
         state.confidence_score = result_dict.get("confidence_score", state.confidence_score)
-        state.underwriting_notes = result_dict.get(
-            "underwriting_notes", state.underwriting_notes
-        )
-        state.processing_method = result_dict.get(
-            "processing_method", state.processing_method
-        )
+        state.underwriting_notes = result_dict.get("underwriting_notes", state.underwriting_notes)
+        state.processing_method = result_dict.get("processing_method", state.processing_method)
         state.approval_flags = result_dict.get("approval_flags", state.approval_flags)
-        state.validation_metrics = result_dict.get(
-            "validation_metrics", state.validation_metrics
-        )
+        state.validation_metrics = result_dict.get("validation_metrics", state.validation_metrics)
 
     return state

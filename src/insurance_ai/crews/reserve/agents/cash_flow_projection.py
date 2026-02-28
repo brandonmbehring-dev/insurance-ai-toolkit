@@ -4,9 +4,8 @@ Projects policy cash flows (liabilities) across economic scenarios.
 Applies mortality, lapse, and expense assumptions.
 """
 
-from typing import Any, Dict, List
-from insurance_ai.crews.reserve.state import ReserveState
 from insurance_ai.crews.reserve import tools
+from insurance_ai.crews.reserve.state import ReserveState
 
 
 def cash_flow_projection_agent(state: ReserveState) -> ReserveState:
@@ -35,15 +34,14 @@ def cash_flow_projection_agent(state: ReserveState) -> ReserveState:
     num_years = state.num_years
     issue_age = state.issue_age
     policy_month = state.policy_month
-    account_value = state.account_value
     benefit_base = state.benefit_base
 
-    projected_cash_flows_dict: Dict[str, List[float]] = {}
-    reserve_paths: List[float] = []
+    projected_cash_flows_dict: dict[str, list[float]] = {}
+    reserve_paths: list[float] = []
 
     for scenario in state.economic_scenarios:
         scenario_id = scenario["scenario_id"]
-        equity_path = scenario["equity_path"]
+        scenario["equity_path"]
         rate_path = scenario["rate_path"]
 
         # Project cash flows for this scenario

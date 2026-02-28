@@ -6,9 +6,9 @@ Defines the data structures that flow through the underwriting workflow:
 - UnderwritingState: Complete state during workflow execution
 """
 
-from typing import Any, Dict, List, Optional
 from dataclasses import dataclass, field
 from enum import Enum
+from typing import Any
 
 
 class ProductType(str, Enum):
@@ -49,9 +49,9 @@ class UnderwritingState:
     gender: str  # "M" or "F"
 
     # ===== Extraction Stage =====
-    extracted_health_metrics: Dict[str, Any] = field(default_factory=dict)
+    extracted_health_metrics: dict[str, Any] = field(default_factory=dict)
     extraction_confidence: float = 0.0
-    extraction_warnings: List[str] = field(default_factory=list)
+    extraction_warnings: list[str] = field(default_factory=list)
 
     # ===== Validation Stage =====
     all_fields_extracted: bool = False
@@ -64,7 +64,7 @@ class UnderwritingState:
 
     # ===== Approval Stage =====
     risk_class: RiskClass = RiskClass.PENDING_REVIEW
-    approval_flags: Dict[str, Any] = field(default_factory=dict)
+    approval_flags: dict[str, Any] = field(default_factory=dict)
     confidence_score: float = 0.0
 
     # ===== Output Stage =====
@@ -72,9 +72,9 @@ class UnderwritingState:
     processing_method: str = "OFFLINE_FIXTURE"  # "OFFLINE_FIXTURE" or "CLAUDE_VISION"
 
     # ===== Validation Metrics =====
-    validation_metrics: Dict[str, str] = field(default_factory=dict)
+    validation_metrics: dict[str, str] = field(default_factory=dict)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert state to dictionary for JSON output."""
         return {
             "applicant_id": self.applicant_id,

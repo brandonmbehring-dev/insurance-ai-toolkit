@@ -6,9 +6,9 @@ Defines the data structures that flow through the reserve calculation workflow:
 - ReserveState: Complete state during workflow execution
 """
 
-from typing import Any, Dict, List, Optional
 from dataclasses import dataclass, field
 from enum import Enum
+from typing import Any
 
 
 class ProductType(str, Enum):
@@ -54,31 +54,31 @@ class ReserveState:
     calculation_method: CalculationMethod = CalculationMethod.MONTE_CARLO
 
     # ===== Scenario Generation Stage =====
-    economic_scenarios: List[Dict[str, Any]] = field(default_factory=list)
+    economic_scenarios: list[dict[str, Any]] = field(default_factory=list)
     num_scenarios: int = 1000
     num_years: int = 30
     scenario_seed: int = 42
     ag43_scenarios: bool = True  # Use NAIC 43 ESG scenarios
 
     # ===== Cash Flow Projection Stage =====
-    projected_cash_flows: Dict[str, List[float]] = field(default_factory=dict)
-    mortality_assumptions: Dict[str, Any] = field(default_factory=dict)
-    lapse_assumptions: Dict[str, Any] = field(default_factory=dict)
-    expense_assumptions: Dict[str, Any] = field(default_factory=dict)
+    projected_cash_flows: dict[str, list[float]] = field(default_factory=dict)
+    mortality_assumptions: dict[str, Any] = field(default_factory=dict)
+    lapse_assumptions: dict[str, Any] = field(default_factory=dict)
+    expense_assumptions: dict[str, Any] = field(default_factory=dict)
     expected_liability_pv: float = 0.0
 
     # ===== CTE Calculation Stage =====
-    reserve_paths: List[float] = field(default_factory=list)
+    reserve_paths: list[float] = field(default_factory=list)
     mean_reserve: float = 0.0
     median_reserve: float = 0.0
-    percentile_reserves: Dict[int, float] = field(default_factory=dict)
+    percentile_reserves: dict[int, float] = field(default_factory=dict)
     cte70_reserve: float = 0.0
     cte90_reserve: float = 0.0
     risk_margin: float = 0.0
 
     # ===== Sensitivity Analysis Stage =====
-    sensitivity_results: Dict[str, Dict[str, float]] = field(default_factory=dict)
-    sensitivity_monotonicity: Dict[str, bool] = field(default_factory=dict)
+    sensitivity_results: dict[str, dict[str, float]] = field(default_factory=dict)
+    sensitivity_monotonicity: dict[str, bool] = field(default_factory=dict)
 
     # ===== Convergence Validation Stage =====
     convergence_error_percent: float = 0.0
@@ -88,13 +88,13 @@ class ReserveState:
     # ===== Output Stage =====
     vm21_reserve: float = 0.0  # Final regulatory reserve for VA
     vm22_reserve: float = 0.0  # Final regulatory reserve for FIA/RILA
-    regulatory_reporting: Dict[str, Any] = field(default_factory=dict)
+    regulatory_reporting: dict[str, Any] = field(default_factory=dict)
     processing_method: str = "OFFLINE_FIXTURE"
 
     # ===== Validation Metrics =====
-    validation_metrics: Dict[str, str] = field(default_factory=dict)
+    validation_metrics: dict[str, str] = field(default_factory=dict)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert state to dictionary for JSON output."""
         return {
             "policy_id": self.policy_id,

@@ -8,11 +8,11 @@ Helper functions for:
 - Convergence and validation checks
 """
 
-from typing import Dict, List, Any
 import math
-
+from typing import Any
 
 # ===== MORTALITY & LAPSE LOADING =====
+
 
 def load_mortality_rate(gender: str, age: int, table_type: str = "SOA_2012_IAM") -> float:
     """
@@ -85,10 +85,10 @@ def load_lapse_rate(issue_age: int, duration: int, model_type: str = "SOA_2006_V
     """
     # SOA 2006 VBT lapse rates (typical pattern)
     vbt_rates = {
-        1: 0.10,   # Year 1: 10% (high surrender)
-        2: 0.08,   # Year 2: 8%
-        3: 0.07,   # Year 3: 7%
-        4: 0.06,   # Year 4-10: 6%
+        1: 0.10,  # Year 1: 10% (high surrender)
+        2: 0.08,  # Year 2: 8%
+        3: 0.07,  # Year 3: 7%
+        4: 0.06,  # Year 4-10: 6%
         5: 0.06,
         10: 0.06,  # After 10: steady 3-6%
         15: 0.04,
@@ -103,6 +103,7 @@ def load_lapse_rate(issue_age: int, duration: int, model_type: str = "SOA_2006_V
 
 
 # ===== DISCOUNT FACTOR CALCULATIONS =====
+
 
 def calculate_discount_factor(zero_rate: float, years: float) -> float:
     """
@@ -146,9 +147,10 @@ def calculate_pv_single_payment(payment: float, discount_rate: float, years: flo
 
 # ===== SCENARIO HELPERS =====
 
+
 def generate_gbm_path(
     S0: float, mu: float, sigma: float, dt: float, T: float, seed: int, num_steps: int = None
-) -> List[float]:
+) -> list[float]:
     """
     Generate Geometric Brownian Motion (GBM) path for equity index.
 
@@ -195,7 +197,7 @@ def generate_gbm_path(
 
 def generate_vasicek_rates(
     r0: float, kappa: float, theta: float, sigma: float, T: float, seed: int, num_steps: int = None
-) -> List[float]:
+) -> list[float]:
     """
     Generate interest rate path using Vasicek model.
 
@@ -240,7 +242,8 @@ def generate_vasicek_rates(
 
 # ===== CTE & PERCENTILE CALCULATIONS =====
 
-def calculate_percentile(values: List[float], percentile: int) -> float:
+
+def calculate_percentile(values: list[float], percentile: int) -> float:
     """
     Calculate percentile of a list of values.
 
@@ -263,7 +266,7 @@ def calculate_percentile(values: List[float], percentile: int) -> float:
     return sorted_values[idx]
 
 
-def calculate_cte_percentile(values: List[float], percentile: int) -> float:
+def calculate_cte_percentile(values: list[float], percentile: int) -> float:
     """
     Calculate Conditional Tail Expectation (CTE) at percentile level.
 
@@ -290,12 +293,12 @@ def calculate_cte_percentile(values: List[float], percentile: int) -> float:
     return sum(tail_values) / len(tail_values) if tail_values else 0.0
 
 
-def calculate_mean(values: List[float]) -> float:
+def calculate_mean(values: list[float]) -> float:
     """Calculate mean of values."""
     return sum(values) / len(values) if values else 0.0
 
 
-def calculate_std_dev(values: List[float]) -> float:
+def calculate_std_dev(values: list[float]) -> float:
     """Calculate standard deviation of values."""
     if not values:
         return 0.0
@@ -305,6 +308,7 @@ def calculate_std_dev(values: List[float]) -> float:
 
 
 # ===== CONVERGENCE CHECKS =====
+
 
 def calculate_convergence_error(cte70_n1000: float, cte70_n100: float) -> float:
     """
@@ -328,6 +332,7 @@ def calculate_convergence_error(cte70_n1000: float, cte70_n100: float) -> float:
 
 
 # ===== VALIDATION CHECKS =====
+
 
 def validate_cte_invariant(mean_reserve: float, cte70_reserve: float) -> bool:
     """
@@ -381,9 +386,10 @@ def validate_sensitivity_direction(
 
 # ===== REPORTING =====
 
+
 def format_reserve_output(
-    mean_reserve: float, cte70_reserve: float, percentiles: Dict[int, float]
-) -> Dict[str, Any]:
+    mean_reserve: float, cte70_reserve: float, percentiles: dict[int, float]
+) -> dict[str, Any]:
     """
     Format reserve output for regulatory reporting.
 

@@ -7,9 +7,9 @@ Defines the data structures for dynamic hedging decisions:
 - Hedge recommendations (position changes, costs)
 """
 
-from typing import Any, Dict, List, Optional
 from dataclasses import dataclass, field
 from enum import Enum
+from typing import Any
 
 
 class InstrumentType(str, Enum):
@@ -43,7 +43,7 @@ class GreeksCalculation:
     theta: float = 0.0  # Time decay per day
     rho: float = 0.0  # Interest rate sensitivity
 
-    def to_dict(self) -> Dict[str, float]:
+    def to_dict(self) -> dict[str, float]:
         """Convert to dictionary."""
         return {
             "delta": self.delta,
@@ -98,16 +98,16 @@ class HedgingState:
 
     # ===== Volatility Calibration Stage =====
     implied_volatility_atm: float = 0.18  # At-the-money vol (18%)
-    volatility_surface: Dict[str, Dict[str, float]] = field(
+    volatility_surface: dict[str, dict[str, float]] = field(
         default_factory=dict
     )  # {term: {strike: vol}}
-    sabr_parameters: Dict[str, float] = field(
+    sabr_parameters: dict[str, float] = field(
         default_factory=dict
     )  # {alpha, beta, rho, nu} from calibration
     volatility_skew: float = 0.0  # Smile slope (higher for OTM puts)
 
     # ===== Hedge Recommendation Stage =====
-    hedge_recommendations: List[HedgeRecommendation] = field(default_factory=list)
+    hedge_recommendations: list[HedgeRecommendation] = field(default_factory=list)
     recommended_action: HedgeAction = HedgeAction.HOLD
     hedge_cost_bps: float = 0.0  # Cost in basis points of liability
 
@@ -118,14 +118,14 @@ class HedgingState:
     hedge_effective: bool = False  # Cost < Benefit?
 
     # ===== Output Stage =====
-    execution_plan: Dict[str, Any] = field(default_factory=dict)
+    execution_plan: dict[str, Any] = field(default_factory=dict)
     hedge_efficiency_score: float = 0.0  # 0-100, higher = better
     processing_method: str = "OFFLINE_FIXTURE"  # "OFFLINE_FIXTURE" or "MARKET_DATA"
 
     # ===== Validation Metrics =====
-    validation_metrics: Dict[str, str] = field(default_factory=dict)
+    validation_metrics: dict[str, str] = field(default_factory=dict)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert state to dictionary for JSON output."""
         return {
             "policy_id": self.policy_id,

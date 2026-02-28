@@ -16,9 +16,10 @@ Note: Some tests require Streamlit. If Streamlit is not installed,
 the chart rendering and other non-AppTest tests will still run.
 """
 
-import pytest
 import sys
 from pathlib import Path
+
+import pytest
 
 # Add src to path
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
@@ -26,14 +27,16 @@ sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 # Try to import AppTest and Plotly, but make them optional
 try:
     from streamlit.testing.v1 import AppTest
+
     HAS_STREAMLIT = True
 except ImportError:
     HAS_STREAMLIT = False
     AppTest = None
 
 try:
-    import plotly.graph_objects as go
-    import plotly.express as px
+    import plotly.express as px  # noqa: F401
+    import plotly.graph_objects as go  # noqa: F401
+
     HAS_PLOTLY = True
 except ImportError:
     HAS_PLOTLY = False
@@ -89,7 +92,9 @@ class TestMainApp:
         """Test that Run Workflow button is present."""
         app.run()
         button_texts = [btn.label for btn in app.button]
-        assert any("Run" in text or "🚀" in text for text in button_texts), "Missing Run Workflow button"
+        assert any("Run" in text or "🚀" in text for text in button_texts), (
+            "Missing Run Workflow button"
+        )
 
     def test_workflow_status_badge_display(self, app):
         """Test that workflow status badge is displayed."""
@@ -129,8 +134,7 @@ class TestUnderwritingPage:
         """Create AppTest instance for underwriting page."""
         # Note: For multi-page apps, we test the page file directly
         page_path = (
-            Path(__file__).parent.parent.parent
-            / "src/insurance_ai/web/pages/02_underwriting.py"
+            Path(__file__).parent.parent.parent / "src/insurance_ai/web/pages/02_underwriting.py"
         )
         return AppTest.from_file(str(page_path), default_timeout=10)
 
@@ -167,8 +171,7 @@ class TestReservesPage:
     def app(self):
         """Create AppTest instance for reserves page."""
         page_path = (
-            Path(__file__).parent.parent.parent
-            / "src/insurance_ai/web/pages/03_reserves.py"
+            Path(__file__).parent.parent.parent / "src/insurance_ai/web/pages/03_reserves.py"
         )
         return AppTest.from_file(str(page_path), default_timeout=10)
 
@@ -194,10 +197,7 @@ class TestHedgingPage:
     @pytest.fixture
     def app(self):
         """Create AppTest instance for hedging page."""
-        page_path = (
-            Path(__file__).parent.parent.parent
-            / "src/insurance_ai/web/pages/04_hedging.py"
-        )
+        page_path = Path(__file__).parent.parent.parent / "src/insurance_ai/web/pages/04_hedging.py"
         return AppTest.from_file(str(page_path), default_timeout=10)
 
     def test_hedging_page_loads(self, app):
@@ -223,8 +223,7 @@ class TestBehaviorPage:
     def app(self):
         """Create AppTest instance for behavior page."""
         page_path = (
-            Path(__file__).parent.parent.parent
-            / "src/insurance_ai/web/pages/05_behavior.py"
+            Path(__file__).parent.parent.parent / "src/insurance_ai/web/pages/05_behavior.py"
         )
         return AppTest.from_file(str(page_path), default_timeout=10)
 
@@ -240,9 +239,7 @@ class TestBehaviorPage:
         for elem in app.markdown:
             all_content.append(str(elem.value) if hasattr(elem, "value") else "")
         combined = " ".join(all_content)
-        assert "Behavior" in combined or "lapse" in combined.lower(), (
-            "Missing behavior page title"
-        )
+        assert "Behavior" in combined or "lapse" in combined.lower(), "Missing behavior page title"
 
 
 @pytest.mark.skipif(not HAS_STREAMLIT, reason="Streamlit not installed")
@@ -253,8 +250,7 @@ class TestScenariosPage:
     def app(self):
         """Create AppTest instance for scenarios page."""
         page_path = (
-            Path(__file__).parent.parent.parent
-            / "src/insurance_ai/web/pages/06_scenarios.py"
+            Path(__file__).parent.parent.parent / "src/insurance_ai/web/pages/06_scenarios.py"
         )
         return AppTest.from_file(str(page_path), default_timeout=10)
 
@@ -270,9 +266,7 @@ class TestScenariosPage:
         for elem in app.markdown:
             all_content.append(str(elem.value) if hasattr(elem, "value") else "")
         combined = " ".join(all_content)
-        assert "Scenarios" in combined or "What-If" in combined, (
-            "Missing scenarios page title"
-        )
+        assert "Scenarios" in combined or "What-If" in combined, "Missing scenarios page title"
 
     def test_scenarios_page_has_sliders(self, app):
         """Test that scenarios page has interactive sliders."""
@@ -282,7 +276,9 @@ class TestScenariosPage:
         assert not app.exception
 
 
-@pytest.mark.skipif(not HAS_PLOTLY, reason="Plotly not installed (install with: pip install -e '.[web]')")
+@pytest.mark.skipif(
+    not HAS_PLOTLY, reason="Plotly not installed (install with: pip install -e '.[web]')"
+)
 class TestChartRendering:
     """Tests for chart rendering in crew pages."""
 
@@ -340,6 +336,7 @@ class TestChartRendering:
     def test_greek_heatmap_renders(self):
         """Test that Greek heatmap renders without error."""
         import numpy as np
+
         from insurance_ai.web.components.charts import plot_greek_heatmap
 
         prices = list(range(-20, 21, 5))
@@ -503,8 +500,8 @@ class TestFullWorkflow:
     def test_all_demo_scenarios_loadable(self):
         """Test that all demo scenarios can be loaded."""
         from insurance_ai.web.data.demo_scenarios import (
-            list_scenarios,
             get_scenario,
+            list_scenarios,
         )
 
         scenarios = list_scenarios()

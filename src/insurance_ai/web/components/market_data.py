@@ -13,8 +13,8 @@ Usage:
 
 import streamlit as st
 
-from insurance_ai.data.market_data import MarketData, get_market_snapshot
 from insurance_ai.data.fred_client import clear_cache
+from insurance_ai.data.market_data import MarketData, get_market_snapshot
 
 
 def render_yield_curve_chart(market_data: MarketData) -> None:
@@ -97,11 +97,7 @@ def render_market_sidebar() -> None:
         st.metric("S&P 500", f"{market.sp500:,.0f}")
     with col2:
         # Color-coded VIX
-        vix_color = (
-            "🟢" if market.vix < 15
-            else "🟡" if market.vix < 25
-            else "🔴"
-        )
+        vix_color = "🟢" if market.vix < 15 else "🟡" if market.vix < 25 else "🔴"
         st.metric("VIX", f"{vix_color} {market.vix:.1f}")
 
     st.caption(f"Volatility: {market.vix_level}")

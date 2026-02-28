@@ -23,13 +23,10 @@ from insurance_ai.web.components.market_data import render_market_sidebar
 from insurance_ai.web.components.pdf_report import render_report_download_section
 from insurance_ai.web.components.scenario_builder import render_scenario_builder_mini
 from insurance_ai.web.config import (
-    EXECUTION_MODE,
     GuardianTheme,
-    STREAMLIT_CONFIG,
     list_available_scenarios,
 )
 from insurance_ai.web.utils.state_manager import initialize_session_state
-
 
 # ===== PAGE CONFIGURATION =====
 
@@ -66,6 +63,7 @@ initialize_session_state()
 
 # ===== HEADER & BRANDING =====
 
+
 def render_header() -> None:
     """Render app header with Guardian branding."""
     col1, col2, col3 = st.columns([1, 2, 1])
@@ -80,7 +78,10 @@ def render_header() -> None:
         )
 
     with col3:
-        st.markdown(f"<p style='text-align: right;'><small>v{__version__}</small></p>", unsafe_allow_html=True)
+        st.markdown(
+            f"<p style='text-align: right;'><small>v{__version__}</small></p>",
+            unsafe_allow_html=True,
+        )
 
     st.markdown("---")
     st.markdown(
@@ -93,6 +94,7 @@ def render_header() -> None:
 
 
 # ===== SIDEBAR NAVIGATION =====
+
 
 def render_sidebar() -> None:
     """Render sidebar with navigation, scenario selector, and mode toggle."""
@@ -144,6 +146,7 @@ def render_sidebar() -> None:
         else:
             # Check if API key is available
             import os
+
             api_key_set = bool(os.getenv("ANTHROPIC_API_KEY"))
             if api_key_set:
                 st.info("**Online**: Claude API enabled")
@@ -186,6 +189,7 @@ def render_sidebar() -> None:
 
 
 # ===== MAIN CONTENT AREA =====
+
 
 def render_main_dashboard() -> None:
     """Render main dashboard page."""
@@ -275,7 +279,9 @@ def render_main_dashboard() -> None:
                 with col2:
                     st.metric("Dynamic Lapse", f"{beh_result.get('dynamic_lapse_rate', 0):.1%}")
                 with col3:
-                    st.metric("Probability In-Force", f"{beh_result.get('probability_in_force', 0):.1%}")
+                    st.metric(
+                        "Probability In-Force", f"{beh_result.get('probability_in_force', 0):.1%}"
+                    )
 
         # Hedging Results
         hedge_result = st.session_state.get("hedging_result")
@@ -321,6 +327,7 @@ def render_main_dashboard() -> None:
 
 # ===== FOOTER =====
 
+
 def render_footer() -> None:
     """Render footer with version and links."""
     st.markdown("---")
@@ -333,12 +340,11 @@ def render_footer() -> None:
         st.caption(f"Mode: {st.session_state.get('selected_mode', 'offline').upper()}")
 
     with col3:
-        st.caption(
-            "⚠️ Prototype - For demonstration only | Not for production use"
-        )
+        st.caption("⚠️ Prototype - For demonstration only | Not for production use")
 
 
 # ===== MAIN APP LOGIC =====
+
 
 def main() -> None:
     """Main application entry point."""

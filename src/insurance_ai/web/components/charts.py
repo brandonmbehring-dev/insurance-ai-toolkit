@@ -6,15 +6,13 @@ All charts cached with @st.cache_resource for performance.
 """
 
 import numpy as np
-import plotly.express as px
 import plotly.graph_objects as go
 import streamlit as st
-from typing import List, Dict, Tuple
 
 from ..config import GuardianTheme
 
-
 # ===== COLOR SCHEME =====
+
 
 def get_guardian_colors():
     """Return Guardian-branded color palette."""
@@ -30,9 +28,10 @@ def get_guardian_colors():
 
 # ===== CTE70 HISTOGRAM =====
 
+
 @st.cache_resource
 def plot_cte70_histogram(
-    simulated_values: List[float],
+    simulated_values: list[float],
     cte70_value: float,
     mean_value: float,
     title: str = "CTE70 Reserve Distribution",
@@ -101,9 +100,10 @@ def plot_cte70_histogram(
 
 # ===== SENSITIVITY TORNADO CHART =====
 
+
 @st.cache_resource
 def plot_sensitivity_tornado(
-    drivers: Dict[str, Tuple[float, float]],
+    drivers: dict[str, tuple[float, float]],
     baseline: float,
     title: str = "Reserve Sensitivity Analysis",
 ) -> go.Figure:
@@ -167,10 +167,11 @@ def plot_sensitivity_tornado(
 
 # ===== LAPSE CURVE (MONEYNESS) =====
 
+
 @st.cache_resource
 def plot_lapse_curve(
-    moneyness_values: List[float],
-    lapse_rates: List[float],
+    moneyness_values: list[float],
+    lapse_rates: list[float],
     current_moneyness: float = None,
     title: str = "Dynamic Lapse Rate by Moneyness",
 ) -> go.Figure:
@@ -240,10 +241,11 @@ def plot_lapse_curve(
 
 # ===== CONVERGENCE GRAPH =====
 
+
 @st.cache_resource
 def plot_convergence(
-    scenario_counts: List[int],
-    cte70_values: List[float],
+    scenario_counts: list[int],
+    cte70_values: list[float],
     title: str = "Reserve Convergence (Monte Carlo Stability)",
 ) -> go.Figure:
     """
@@ -276,7 +278,7 @@ def plot_convergence(
 
     # Convergence band (±2%)
     if cte70_values:
-        final_value = cte70_values[-1]
+        cte70_values[-1]
         upper_band = [v * 1.02 for v in cte70_values]
         lower_band = [v * 0.98 for v in cte70_values]
 
@@ -305,10 +307,11 @@ def plot_convergence(
 
 # ===== GREEK HEATMAP =====
 
+
 @st.cache_resource
 def plot_greek_heatmap(
-    underlying_prices: List[float],
-    volatilities: List[float],
+    underlying_prices: list[float],
+    volatilities: list[float],
     greek_matrix: np.ndarray,
     greek_name: str = "Delta",
     title: str = None,
@@ -329,7 +332,7 @@ def plot_greek_heatmap(
     if title is None:
         title = f"{greek_name} Sensitivity Surface"
 
-    colors = get_guardian_colors()
+    get_guardian_colors()
 
     fig = go.Figure(
         data=go.Heatmap(
@@ -355,9 +358,10 @@ def plot_greek_heatmap(
 
 # ===== SCENARIO COMPARISON BOX PLOT =====
 
+
 @st.cache_resource
 def plot_scenario_comparison(
-    scenarios: Dict[str, List[float]],
+    scenarios: dict[str, list[float]],
     title: str = "Scenario Comparison: Reserve Distribution",
 ) -> go.Figure:
     """
@@ -397,11 +401,12 @@ def plot_scenario_comparison(
 
 # ===== PAYOFF DIAGRAM =====
 
+
 @st.cache_resource
 def plot_payoff_diagram(
-    underlying_prices: List[float],
-    unhedged_pnl: List[float],
-    hedged_pnl: List[float],
+    underlying_prices: list[float],
+    unhedged_pnl: list[float],
+    hedged_pnl: list[float],
     title: str = "P&L Payoff Diagram",
 ) -> go.Figure:
     """
@@ -464,7 +469,8 @@ def plot_payoff_diagram(
 
 # ===== BASIC METRICS DISPLAY =====
 
-def display_metric_row(metrics: Dict[str, Tuple[str, str]]) -> None:
+
+def display_metric_row(metrics: dict[str, tuple[str, str]]) -> None:
     """
     Display a row of metrics with values and deltas.
 
@@ -474,17 +480,18 @@ def display_metric_row(metrics: Dict[str, Tuple[str, str]]) -> None:
     """
     cols = st.columns(len(metrics))
 
-    for col, (metric_name, (value, delta)) in zip(cols, metrics.items()):
+    for col, (metric_name, (value, delta)) in zip(cols, metrics.items(), strict=False):
         with col:
             st.metric(metric_name, value, delta=delta)
 
 
 # ===== YIELD CURVE CHART =====
 
+
 @st.cache_resource
 def plot_yield_curve(
-    tenors: List[str],
-    yields: List[float],
+    tenors: list[str],
+    yields: list[float],
     title: str = "Treasury Yield Curve",
     show_inversion: bool = True,
 ) -> go.Figure:
@@ -514,7 +521,7 @@ def plot_yield_curve(
             line=dict(color=colors["primary"], width=3),
             marker=dict(size=10),
             fill="tozeroy",
-            fillcolor=f"rgba(0, 61, 165, 0.1)",
+            fillcolor="rgba(0, 61, 165, 0.1)",
         )
     )
 

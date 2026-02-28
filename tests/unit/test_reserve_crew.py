@@ -19,11 +19,10 @@ import unittest
 from pathlib import Path
 
 from insurance_ai.crews.reserve import (
-    ReserveState,
     ProductType,
-    CalculationMethod,
-    run_reserve_crew,
+    ReserveState,
     build_reserve_crew,
+    run_reserve_crew,
 )
 
 
@@ -157,9 +156,7 @@ class TestScenarioGeneration(unittest.TestCase):
 
         for scenario in result.economic_scenarios:
             for equity_level in scenario["equity_path"]:
-                self.assertGreater(
-                    equity_level, 0, "GBM path values must be positive"
-                )
+                self.assertGreater(equity_level, 0, "GBM path values must be positive")
 
     def test_scenario_seed_reproducibility(self) -> None:
         """Same seed should produce identical scenarios."""
@@ -192,9 +189,7 @@ class TestScenarioGeneration(unittest.TestCase):
         result2 = run_reserve_crew(state2)
 
         # Same seed → same cte70
-        self.assertAlmostEqual(
-            result1.cte70_reserve, result2.cte70_reserve, places=2
-        )
+        self.assertAlmostEqual(result1.cte70_reserve, result2.cte70_reserve, places=2)
 
 
 class TestCTECalculation(unittest.TestCase):
@@ -219,7 +214,8 @@ class TestCTECalculation(unittest.TestCase):
 
         # CTE70 >= Mean (within rounding tolerance)
         self.assertGreaterEqual(
-            result.cte70_reserve, result.mean_reserve - 1.0  # 1.0 tolerance for rounding
+            result.cte70_reserve,
+            result.mean_reserve - 1.0,  # 1.0 tolerance for rounding
         )
 
     def test_percentiles_monotonic(self) -> None:
@@ -458,9 +454,7 @@ class TestConvergenceValidation(unittest.TestCase):
         result = run_reserve_crew(state)
 
         self.assertIn("regulatory_standard", result.validation_metrics)
-        self.assertEqual(
-            result.validation_metrics["regulatory_standard"], "VM-22 (Fixed Annuity)"
-        )
+        self.assertEqual(result.validation_metrics["regulatory_standard"], "VM-22 (Fixed Annuity)")
         self.assertGreater(result.vm22_reserve, 0)
 
     def test_validation_metrics_populated(self) -> None:
@@ -499,10 +493,7 @@ class TestFixtures(unittest.TestCase):
     def _load_fixture(self, fixture_name: str) -> dict:
         """Load fixture JSON file."""
         fixture_path = (
-            Path(__file__).parent.parent
-            / "fixtures"
-            / "reserve"
-            / f"{fixture_name}.json"
+            Path(__file__).parent.parent / "fixtures" / "reserve" / f"{fixture_name}.json"
         )
         if not fixture_path.exists():
             self.skipTest(f"Fixture {fixture_name} not found")

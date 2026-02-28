@@ -9,7 +9,7 @@ This agent makes the final approval decision based on:
 Output: risk_class (APPROVED, APPROVED_WITH_FLATEX, PENDING_REVIEW, DECLINED)
 """
 
-from ..state import UnderwritingState, RiskClass
+from ..state import RiskClass, UnderwritingState
 from ..tools import check_approval_rules
 
 

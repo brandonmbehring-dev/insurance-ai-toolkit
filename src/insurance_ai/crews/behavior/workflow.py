@@ -12,11 +12,10 @@ Validates against:
 - Withdrawal sustainability (account doesn't deplete)
 """
 
-from typing import Literal
-from langgraph.graph import StateGraph, START, END
+from langgraph.graph import END, START, StateGraph
 
-from .state import BehaviorState, WithdrawalStrategy
 from . import tools
+from .state import BehaviorState, WithdrawalStrategy
 
 
 def lapse_modeling_agent(state: BehaviorState) -> BehaviorState:
@@ -29,9 +28,7 @@ def lapse_modeling_agent(state: BehaviorState) -> BehaviorState:
     - Market volatility (higher vol = more valuable guarantee)
     """
     # Calculate moneyness
-    state.moneyness = tools.calculate_moneyness(
-        state.account_value, state.benefit_base
-    )
+    state.moneyness = tools.calculate_moneyness(state.account_value, state.benefit_base)
 
     # Calculate dynamic lapse rate
     state.dynamic_lapse_rate = tools.calculate_dynamic_lapse_rate(
@@ -47,9 +44,7 @@ def lapse_modeling_agent(state: BehaviorState) -> BehaviorState:
     for year in range(int(state.time_to_maturity_years)):
         # Revert towards base over time
         reversion = min(year / 5.0, 1.0)
-        year_lapse = (
-            state.base_lapse_rate * reversion + current_lapse * (1.0 - reversion)
-        )
+        year_lapse = state.base_lapse_rate * reversion + current_lapse * (1.0 - reversion)
         state.lapse_rate_by_year.append(year_lapse)
 
     return state
@@ -125,7 +120,7 @@ def path_simulation_agent(state: BehaviorState) -> BehaviorState:
     if num_in_force > 0:
         final_values = [
             path[-1]
-            for path, in_force in zip(account_paths, in_force_flags)
+            for path, in_force in zip(account_paths, in_force_flags, strict=False)
             if in_force
         ]
         state.average_account_value_at_maturity = sum(final_values) / len(final_values)
@@ -174,9 +169,7 @@ def sensitivity_analysis_agent(state: BehaviorState) -> BehaviorState:
 
     # Behavioral adjustment to reserve
     state.behavioral_adjustment_to_reserve = (
-        state.reserve_impact_from_behavior / base_reserve
-        if base_reserve > 0
-        else 0.0
+        state.reserve_impact_from_behavior / base_reserve if base_reserve > 0 else 0.0
     )
 
     # Validation metrics

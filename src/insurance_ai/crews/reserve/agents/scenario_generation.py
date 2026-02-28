@@ -4,9 +4,8 @@ Generates economic scenarios (equity paths, interest rate paths) for reserve cal
 Uses GBM for equity indices and Vasicek for interest rates.
 """
 
-from typing import Any, Dict, List
-from insurance_ai.crews.reserve.state import ReserveState
 from insurance_ai.crews.reserve import tools
+from insurance_ai.crews.reserve.state import ReserveState
 
 
 def scenario_generation_agent(state: ReserveState) -> ReserveState:

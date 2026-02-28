@@ -7,9 +7,9 @@ Defines data structures for policyholder behavior modeling:
 - Rate sensitivity analysis
 """
 
-from typing import Any, Dict, List, Optional
 from dataclasses import dataclass, field
 from enum import Enum
+from typing import Any
 
 
 class WithdrawalStrategy(str, Enum):
@@ -36,10 +36,10 @@ class WithdrawalPath:
     """Withdrawal path for a single scenario."""
 
     scenario_id: str
-    annual_withdrawals: List[float] = field(default_factory=list)  # By year
+    annual_withdrawals: list[float] = field(default_factory=list)  # By year
     total_withdrawn: float = 0.0
     account_value_at_surrender: float = 0.0  # If surrendered early
-    surrender_year: Optional[int] = None  # Year of surrender (if any)
+    surrender_year: int | None = None  # Year of surrender (if any)
     strategy_used: WithdrawalStrategy = WithdrawalStrategy.OPTIMAL
 
 
@@ -72,18 +72,18 @@ class BehaviorState:
     base_lapse_rate: float = 0.06  # Base 6%
     moneyness: float = 0.0  # Account value / Benefit base ratio
     dynamic_lapse_rate: float = 0.0  # Adjusted for rates/vol
-    lapse_rate_by_year: List[float] = field(default_factory=list)
+    lapse_rate_by_year: list[float] = field(default_factory=list)
 
     # ===== Withdrawal Planning Stage =====
     recommended_strategy: WithdrawalStrategy = WithdrawalStrategy.OPTIMAL
     optimal_withdrawal_rate: float = 0.0  # % of account value
-    withdrawal_paths: List[WithdrawalPath] = field(default_factory=list)
+    withdrawal_paths: list[WithdrawalPath] = field(default_factory=list)
 
     # ===== Path Simulation Stage =====
     num_scenarios: int = 1000
     scenario_seed: int = 42
-    simulated_account_values: List[List[float]] = field(default_factory=list)  # [scenario][year]
-    simulated_surrenders: List[int] = field(default_factory=list)  # [scenario] → surrender_year
+    simulated_account_values: list[list[float]] = field(default_factory=list)  # [scenario][year]
+    simulated_surrenders: list[int] = field(default_factory=list)  # [scenario] → surrender_year
     average_account_value_at_maturity: float = 0.0
     probability_in_force_at_maturity: float = 1.0  # % not surrendered
 
@@ -95,10 +95,10 @@ class BehaviorState:
 
     # ===== Output Stage =====
     behavioral_adjustment_to_reserve: float = 0.0  # % adjustment to base reserve
-    validation_metrics: Dict[str, str] = field(default_factory=dict)
+    validation_metrics: dict[str, str] = field(default_factory=dict)
     processing_method: str = "OFFLINE_FIXTURE"
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert state to dictionary for JSON output."""
         return {
             "policy_id": self.policy_id,

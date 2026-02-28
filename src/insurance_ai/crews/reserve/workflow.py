@@ -13,14 +13,15 @@ Convergence Loop:
 """
 
 from typing import Literal
-from langgraph.graph import StateGraph, START, END
 
-from .state import ReserveState
-from .agents.scenario_generation import scenario_generation_agent
+from langgraph.graph import END, START, StateGraph
+
 from .agents.cash_flow_projection import cash_flow_projection_agent
-from .agents.cte_calculation import cte_calculation_agent
-from .agents.sensitivity_analysis import sensitivity_analysis_agent
 from .agents.convergence_validation import convergence_validation_agent
+from .agents.cte_calculation import cte_calculation_agent
+from .agents.scenario_generation import scenario_generation_agent
+from .agents.sensitivity_analysis import sensitivity_analysis_agent
+from .state import ReserveState
 
 
 def build_reserve_crew() -> StateGraph:
@@ -145,9 +146,7 @@ def run_reserve_crew(state: ReserveState) -> ReserveState:
     # Convert dict result back to ReserveState
     # (LangGraph's invoke() returns a dict, not the state object)
     if isinstance(result_dict, dict):
-        state.economic_scenarios = result_dict.get(
-            "economic_scenarios", state.economic_scenarios
-        )
+        state.economic_scenarios = result_dict.get("economic_scenarios", state.economic_scenarios)
         state.projected_cash_flows = result_dict.get(
             "projected_cash_flows", state.projected_cash_flows
         )
@@ -172,14 +171,10 @@ def run_reserve_crew(state: ReserveState) -> ReserveState:
             "convergence_error_percent", state.convergence_error_percent
         )
         state.converged = result_dict.get("converged", state.converged)
-        state.validation_metrics = result_dict.get(
-            "validation_metrics", state.validation_metrics
-        )
+        state.validation_metrics = result_dict.get("validation_metrics", state.validation_metrics)
         state.regulatory_reporting = result_dict.get(
             "regulatory_reporting", state.regulatory_reporting
         )
-        state.processing_method = result_dict.get(
-            "processing_method", state.processing_method
-        )
+        state.processing_method = result_dict.get("processing_method", state.processing_method)
 
     return state

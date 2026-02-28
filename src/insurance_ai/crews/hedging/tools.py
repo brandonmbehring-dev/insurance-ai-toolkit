@@ -8,15 +8,13 @@ Helper functions for:
 """
 
 import math
-from typing import Dict, Tuple
-
 
 # ===== BLACK-SCHOLES GREEKS =====
 
 
 def black_scholes_d1_d2(
     S: float, K: float, T: float, r: float, sigma: float
-) -> Tuple[float, float]:
+) -> tuple[float, float]:
     """
     Calculate d1 and d2 for Black-Scholes.
 
@@ -49,9 +47,7 @@ def normal_pdf(x: float) -> float:
     return math.exp(-0.5 * x**2) / math.sqrt(2 * math.pi)
 
 
-def black_scholes_call(
-    S: float, K: float, T: float, r: float, sigma: float
-) -> float:
+def black_scholes_call(S: float, K: float, T: float, r: float, sigma: float) -> float:
     """
     Black-Scholes European call option price.
 
@@ -75,9 +71,7 @@ def black_scholes_call(
     return max(call, 0.0)
 
 
-def black_scholes_put(
-    S: float, K: float, T: float, r: float, sigma: float
-) -> float:
+def black_scholes_put(S: float, K: float, T: float, r: float, sigma: float) -> float:
     """
     Black-Scholes European put option price.
 
@@ -117,9 +111,7 @@ def calculate_delta(
         return normal_cdf(d1) - 1.0
 
 
-def calculate_gamma(
-    S: float, K: float, T: float, r: float, sigma: float
-) -> float:
+def calculate_gamma(S: float, K: float, T: float, r: float, sigma: float) -> float:
     """
     Calculate option gamma (d²Price/dSpot²).
 
@@ -172,15 +164,13 @@ def calculate_theta(
     d1, d2 = black_scholes_d1_d2(S, K, T, r, sigma)
 
     if option_type == "call":
-        theta = (
-            -S * normal_pdf(d1) * sigma / (2 * math.sqrt(T))
-            - r * K * math.exp(-r * T) * normal_cdf(d2)
-        )
+        theta = -S * normal_pdf(d1) * sigma / (2 * math.sqrt(T)) - r * K * math.exp(
+            -r * T
+        ) * normal_cdf(d2)
     else:  # put
-        theta = (
-            -S * normal_pdf(d1) * sigma / (2 * math.sqrt(T))
-            + r * K * math.exp(-r * T) * normal_cdf(-d2)
-        )
+        theta = -S * normal_pdf(d1) * sigma / (2 * math.sqrt(T)) + r * K * math.exp(
+            -r * T
+        ) * normal_cdf(-d2)
 
     # Convert to per-day (divide by 365)
     return theta / 365.0
@@ -231,9 +221,7 @@ def calculate_glwb_liability_delta(
     return -hedge_ratio * 0.5
 
 
-def calculate_glwb_liability_vega(
-    account_value: float, time_to_maturity: float
-) -> float:
+def calculate_glwb_liability_vega(account_value: float, time_to_maturity: float) -> float:
     """
     Calculate vega of GLWB liability.
 
@@ -275,7 +263,7 @@ def sabr_implied_vol(
 
     # Simplified SABR (Hagan formula approximation)
     # For beta=1 (lognormal), simplifies to ATM vol with smile adjustment
-    FK = (F * K) ** ((1 - beta) / 2)
+    (F * K) ** ((1 - beta) / 2)
 
     # ATM vol
     atm_vol = alpha / (F ** (1 - beta))
@@ -288,9 +276,7 @@ def sabr_implied_vol(
     return max(implied_vol, 0.05)  # Floor at 5%
 
 
-def calibrate_sabr_simple(
-    spot: float, atm_vol: float, skew_vol: float
-) -> Dict[str, float]:
+def calibrate_sabr_simple(spot: float, atm_vol: float, skew_vol: float) -> dict[str, float]:
     """
     Simplified SABR calibration.
 
@@ -317,8 +303,8 @@ def calibrate_sabr_simple(
 
 
 def build_vol_surface(
-    atm_vol: float, skew: float, term_structure: Dict[float, float]
-) -> Dict[str, Dict[str, float]]:
+    atm_vol: float, skew: float, term_structure: dict[float, float]
+) -> dict[str, dict[str, float]]:
     """
     Build simplified volatility surface.
 
@@ -385,9 +371,7 @@ def calculate_hedge_notional(
     return hedge_notional
 
 
-def calculate_hedge_cost(
-    hedge_notional: float, put_premium: float
-) -> Tuple[float, float]:
+def calculate_hedge_cost(hedge_notional: float, put_premium: float) -> tuple[float, float]:
     """
     Calculate hedge cost in dollars and basis points.
 

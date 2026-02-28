@@ -3,9 +3,8 @@
 Validates Monte Carlo convergence and regulatory compliance (VM-21/VM-22).
 """
 
-from typing import Any, Dict, List
-from insurance_ai.crews.reserve.state import ReserveState
 from insurance_ai.crews.reserve import tools
+from insurance_ai.crews.reserve.state import ReserveState
 
 
 def convergence_validation_agent(state: ReserveState) -> ReserveState:
@@ -42,9 +41,7 @@ def convergence_validation_agent(state: ReserveState) -> ReserveState:
         # Use first 100 as low-resolution estimate
         cte70_n100 = tools.calculate_cte_percentile(reserve_paths[:100], percentile=70)
         # Use all as high-resolution estimate
-        cte70_n1000 = tools.calculate_cte_percentile(
-            reserve_paths, percentile=70
-        )
+        cte70_n1000 = tools.calculate_cte_percentile(reserve_paths, percentile=70)
 
         # Calculate convergence error
         convergence_error = tools.calculate_convergence_error(cte70_n1000, cte70_n100)
@@ -61,7 +58,7 @@ def convergence_validation_agent(state: ReserveState) -> ReserveState:
     is_cte_valid = tools.validate_cte_invariant(mean_base, cte70_base)
 
     # Calculate additional metrics
-    validation_metrics: Dict[str, str] = {}
+    validation_metrics: dict[str, str] = {}
 
     # CTE/Mean ratio should be 1.05-2.0 (tail risk factor)
     if mean_base > 0:
@@ -83,14 +80,10 @@ def convergence_validation_agent(state: ReserveState) -> ReserveState:
         validation_metrics["coefficient_of_variation"] = f"{cv:.3f}"
 
     # CTE mathematical invariant
-    validation_metrics["cte_gte_mean"] = (
-        "PASS" if is_cte_valid else "FAIL"
-    )
+    validation_metrics["cte_gte_mean"] = "PASS" if is_cte_valid else "FAIL"
 
     # Convergence status
-    validation_metrics["convergence_error"] = (
-        f"{state.convergence_error_percent * 100:.2f}%"
-    )
+    validation_metrics["convergence_error"] = f"{state.convergence_error_percent * 100:.2f}%"
     validation_metrics["converged"] = "PASS" if state.converged else "WARN"
 
     # Number of scenarios
@@ -100,9 +93,7 @@ def convergence_validation_agent(state: ReserveState) -> ReserveState:
     if state.product_type.value == "VA_with_GLWB":
         validation_metrics["regulatory_standard"] = "VM-21 (Variable Annuity)"
         # VM-21 typically requires CTE70 = mean + 2-3 sigma
-        target_reserve = (
-            mean_base + 2.5 * std_dev
-        )
+        target_reserve = mean_base + 2.5 * std_dev
         if abs(cte70_base - target_reserve) / target_reserve < 0.15:
             validation_metrics["vm21_compliance"] = "PASS"
         else:

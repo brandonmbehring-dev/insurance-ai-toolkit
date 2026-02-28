@@ -9,11 +9,11 @@ import numpy as np
 import streamlit as st
 
 from insurance_ai.web import __version__
-from insurance_ai.web.components.export import render_crew_export_section
 from insurance_ai.web.components.charts import (
     plot_lapse_curve,
     plot_scenario_comparison,
 )
+from insurance_ai.web.components.export import render_crew_export_section
 
 
 def render_behavior_page() -> None:
@@ -100,10 +100,8 @@ def render_behavior_page() -> None:
     moneyness_range = np.linspace(0.5, 1.8, 30)
     # Demo curve: rational lapse = base * f(moneyness)
     # ITM: lapse = base * 0.5, ATM: lapse = base * 1.0, OTM: lapse = base * 2.0
-    lapse_range = [
-        base_lapse * (1.0 + 1.5 * np.exp(-(m - 1.0) / 0.3)) for m in moneyness_range
-    ]
-    lapse_range = [max(0.01, min(0.25, l)) for l in lapse_range]  # Bound 1-25%
+    lapse_range = [base_lapse * (1.0 + 1.5 * np.exp(-(m - 1.0) / 0.3)) for m in moneyness_range]
+    lapse_range = [max(0.01, min(0.25, val)) for val in lapse_range]  # Bound 1-25%
 
     fig_lapse = plot_lapse_curve(
         moneyness_values=moneyness_range.tolist(),
@@ -118,7 +116,7 @@ def render_behavior_page() -> None:
         **Current Scenario**:
         - Moneyness: {moneyness:.2f}
         - Predicted lapse: {dynamic_lapse:.1%}
-        - Interpretation: {'Low surrender risk (ITM, valuable account)' if moneyness > 1.1 else 'Medium surrender risk (ATM)' if 0.9 <= moneyness <= 1.1 else 'High surrender risk (OTM, underwater)'}
+        - Interpretation: {"Low surrender risk (ITM, valuable account)" if moneyness > 1.1 else "Medium surrender risk (ATM)" if 0.9 <= moneyness <= 1.1 else "High surrender risk (OTM, underwater)"}
 
         **Model Assumptions**:
         - Base lapse rate (VBT): {base_lapse:.1%}
@@ -192,7 +190,7 @@ def render_behavior_page() -> None:
 
         # Create scenario comparison: percentiles
         num_years = paths_array.shape[1] if len(paths_array.shape) > 1 else 1
-        years = np.arange(0, num_years)
+        np.arange(0, num_years)
 
         # Calculate percentiles along scenarios
         p10 = np.percentile(paths_array, 10, axis=0) if len(paths_array.shape) > 1 else paths_array
@@ -248,7 +246,7 @@ def render_behavior_page() -> None:
         )
 
     st.info(f"""
-    **Reserve Reduction**: ${cte70_static - cte70_dynamic:,.0f} ({(1 - cte70_dynamic/cte70_static):.1%})
+    **Reserve Reduction**: ${cte70_static - cte70_dynamic:,.0f} ({(1 - cte70_dynamic / cte70_static):.1%})
 
     Rational lapse modeling captures that customers exit when accounts are underwater,
     reducing tail risk and lowering reserve requirements.
@@ -305,10 +303,14 @@ def render_behavior_page() -> None:
     st.markdown("### ✓ Validation Checks")
 
     validation_checks = {
-        "Lapse increases with OTM moneyness": dynamic_lapse > base_lapse if moneyness < 1.0 else True,
+        "Lapse increases with OTM moneyness": dynamic_lapse > base_lapse
+        if moneyness < 1.0
+        else True,
         "Withdrawal rate reasonable (1-8%)": 0.01 <= withdrawal_rate <= 0.08,
         "Path simulation converged": True,  # Demo
-        "Account paths generated": len(simulated_account_values) > 0 if simulated_account_values else True,
+        "Account paths generated": len(simulated_account_values) > 0
+        if simulated_account_values
+        else True,
         "Reserve impact quantified": True,
     }
 

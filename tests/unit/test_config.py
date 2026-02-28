@@ -1,10 +1,11 @@
 """Unit tests for config module."""
 
 import os
-import pytest
 from pathlib import Path
 
-from insurance_ai.config import ONLINE_MODE, Config, get_config, load_fixture
+import pytest
+
+from insurance_ai.config import Config, get_config, load_fixture
 
 
 class TestConfig:

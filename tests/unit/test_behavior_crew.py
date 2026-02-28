@@ -343,10 +343,7 @@ class TestFixtures(unittest.TestCase):
     def _load_fixture(self, fixture_name: str) -> dict:
         """Load fixture JSON file."""
         fixture_path = (
-            Path(__file__).parent.parent
-            / "fixtures"
-            / "behavior"
-            / f"{fixture_name}.json"
+            Path(__file__).parent.parent / "fixtures" / "behavior" / f"{fixture_name}.json"
         )
         if not fixture_path.exists():
             self.skipTest(f"Fixture {fixture_name} not found")
@@ -472,9 +469,7 @@ class TestDeterminism(unittest.TestCase):
         result2 = run_behavior_crew(state2)
 
         # Same seed should give identical lapse rates
-        self.assertAlmostEqual(
-            result1.dynamic_lapse_rate, result2.dynamic_lapse_rate, places=6
-        )
+        self.assertAlmostEqual(result1.dynamic_lapse_rate, result2.dynamic_lapse_rate, places=6)
         self.assertAlmostEqual(
             result1.probability_in_force_at_maturity,
             result2.probability_in_force_at_maturity,

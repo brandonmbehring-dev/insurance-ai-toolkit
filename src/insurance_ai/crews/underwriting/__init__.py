@@ -12,8 +12,8 @@ Workflow:
 Output: Risk classification with confidence score and approval status.
 """
 
+from .state import ProductType, RiskClass, UnderwritingState
 from .workflow import build_underwriting_crew, run_underwriting_crew
-from .state import UnderwritingState, RiskClass, ProductType
 
 __all__ = [
     "build_underwriting_crew",

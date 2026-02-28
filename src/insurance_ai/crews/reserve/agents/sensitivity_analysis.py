@@ -4,9 +4,8 @@ Analyzes sensitivity of reserve to assumption changes (rate shocks, volatility, 
 Validates monotonicity (shocks produce directionally correct reserve changes).
 """
 
-from typing import Any, Dict, List
-from insurance_ai.crews.reserve.state import ReserveState
 from insurance_ai.crews.reserve import tools
+from insurance_ai.crews.reserve.state import ReserveState
 
 
 def sensitivity_analysis_agent(state: ReserveState) -> ReserveState:
@@ -31,12 +30,10 @@ def sensitivity_analysis_agent(state: ReserveState) -> ReserveState:
     base_cte70 = state.cte70_reserve
     base_reserve_paths = state.reserve_paths.copy() if state.reserve_paths else []
 
-    sensitivity_results: Dict[str, Dict[str, float]] = {}
-    sensitivity_monotonicity: Dict[str, bool] = {}
+    sensitivity_results: dict[str, dict[str, float]] = {}
+    sensitivity_monotonicity: dict[str, bool] = {}
 
     # 1. Rate Shocks (±50 basis points)
-    rate_up_shock = 0.005  # +50bps
-    rate_down_shock = -0.005  # -50bps
 
     # Simulate rate up shock impact
     shocked_reserves_up = [
@@ -62,9 +59,7 @@ def sensitivity_analysis_agent(state: ReserveState) -> ReserveState:
     sensitivity_monotonicity["rates_up"] = is_valid_rates_up
 
     # Simulate rate down shock impact
-    shocked_reserves_down = [
-        r * 1.05 for r in base_reserve_paths
-    ]  # Rates down → PV up
+    shocked_reserves_down = [r * 1.05 for r in base_reserve_paths]  # Rates down → PV up
     shocked_cte70_down = (
         tools.calculate_cte_percentile(shocked_reserves_down, 70)
         if shocked_reserves_down
@@ -85,8 +80,6 @@ def sensitivity_analysis_agent(state: ReserveState) -> ReserveState:
     sensitivity_monotonicity["rates_down"] = is_valid_rates_down
 
     # 2. Volatility Shocks (±25%)
-    vol_up_shock = 0.25  # +25% vol
-    vol_down_shock = -0.25  # -25% vol
 
     # Higher volatility increases tail risk → higher reserve
     shocked_reserves_vol_up = [r * 1.12 for r in base_reserve_paths]

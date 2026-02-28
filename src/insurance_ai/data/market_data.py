@@ -14,11 +14,8 @@ Usage:
 
 from dataclasses import dataclass
 from datetime import datetime
-from typing import List, Tuple
 
 from .fred_client import (
-    fetch_fed_funds_rate,
-    fetch_market_indices,
     fetch_treasury_yields,
     get_all_market_data,
 )
@@ -47,7 +44,7 @@ class MarketData:
     timestamp: datetime
 
     @property
-    def yield_curve(self) -> List[Tuple[str, float]]:
+    def yield_curve(self) -> list[tuple[str, float]]:
         """Return yield curve as ordered list of (tenor, yield) tuples."""
         return [
             ("1Y", self.treasury_1y),
@@ -113,7 +110,7 @@ def get_market_snapshot() -> MarketData:
     )
 
 
-def get_treasury_curve_data() -> List[Tuple[str, float]]:
+def get_treasury_curve_data() -> list[tuple[str, float]]:
     """
     Get treasury yield curve data for charting.
 

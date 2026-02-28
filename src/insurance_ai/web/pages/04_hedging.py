@@ -9,11 +9,11 @@ import numpy as np
 import streamlit as st
 
 from insurance_ai.web import __version__
-from insurance_ai.web.components.export import render_crew_export_section
 from insurance_ai.web.components.charts import (
     plot_greek_heatmap,
     plot_payoff_diagram,
 )
+from insurance_ai.web.components.export import render_crew_export_section
 
 
 def render_hedging_page() -> None:
@@ -40,7 +40,7 @@ def render_hedging_page() -> None:
         return
 
     hedging_result = st.session_state.get("hedging_result", {})
-    reserve_result = st.session_state.get("reserve_result", {})
+    st.session_state.get("reserve_result", {})
 
     # ===== GUARDIAN CALLOUT =====
     st.markdown("---")
@@ -317,10 +317,6 @@ def render_hedging_page() -> None:
     st.markdown("---")
     st.markdown("### 📈 Hedge Performance (Historical)")
 
-    hedge_dates = ["Week 0", "Week 1", "Week 2", "Week 3", "Week 4"]
-    unhedged_returns = [0, 2.3, -1.5, 3.2, 1.8]  # Volatile
-    hedged_returns = [0, 1.8, -0.8, 2.2, 1.2]  # Smoother
-
     col1, col2 = st.columns(2)
 
     with col1:
@@ -370,7 +366,9 @@ def render_hedging_page() -> None:
 
     # ===== FOOTER =====
     st.markdown("---")
-    st.caption(f"Hedging Crew v{__version__} | Greeks & Hedge Recommendations | Educational Prototype")
+    st.caption(
+        f"Hedging Crew v{__version__} | Greeks & Hedge Recommendations | Educational Prototype"
+    )
 
 
 if __name__ == "__main__":

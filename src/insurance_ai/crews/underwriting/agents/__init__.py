@@ -7,10 +7,10 @@ Each agent is a node in the LangGraph workflow:
 - approval_agent: Apply product-specific approval rules
 """
 
-from .extraction import extraction_agent
-from .validation import validation_agent
-from .mortality import mortality_agent
 from .approval import approval_agent
+from .extraction import extraction_agent
+from .mortality import mortality_agent
+from .validation import validation_agent
 
 __all__ = [
     "extraction_agent",

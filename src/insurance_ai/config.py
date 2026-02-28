@@ -7,7 +7,6 @@ Online mode: Requires ANTHROPIC_API_KEY, uses Claude Vision and market APIs
 import os
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Optional
 
 # Determine mode from environment: defaults to offline
 ONLINE_MODE: bool = os.getenv("INSURANCE_AI_MODE", "offline").lower() == "online"
@@ -22,7 +21,7 @@ class Config:
     """Application configuration."""
 
     online_mode: bool
-    anthropic_api_key: Optional[str]
+    anthropic_api_key: str | None
     fixtures_dir: Path
     debug: bool = False
 
@@ -43,7 +42,7 @@ class Config:
         return True
 
 
-def get_config(online: Optional[bool] = None, debug: bool = False) -> Config:
+def get_config(online: bool | None = None, debug: bool = False) -> Config:
     """Get application configuration.
 
     Args:

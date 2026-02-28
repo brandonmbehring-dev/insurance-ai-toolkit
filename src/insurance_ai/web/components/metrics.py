@@ -11,16 +11,15 @@ Usage:
     })
 """
 
-from typing import Dict, Tuple, Optional
 import streamlit as st
 
 
 def metric_card(
     label: str,
     value: str,
-    delta: Optional[str] = None,
+    delta: str | None = None,
     delta_color: str = "normal",
-    help_text: Optional[str] = None,
+    help_text: str | None = None,
 ) -> None:
     """
     Display a single metric card.
@@ -41,7 +40,7 @@ def metric_card(
     )
 
 
-def metric_row(metrics: Dict[str, Tuple[str, Optional[str]]]) -> None:
+def metric_row(metrics: dict[str, tuple[str, str | None]]) -> None:
     """
     Display multiple metrics in a single row (columns layout).
 
@@ -59,7 +58,7 @@ def metric_row(metrics: Dict[str, Tuple[str, Optional[str]]]) -> None:
     num_metrics = len(metrics)
     cols = st.columns(num_metrics)
 
-    for col, (metric_name, (value, delta)) in zip(cols, metrics.items()):
+    for col, (metric_name, (value, delta)) in zip(cols, metrics.items(), strict=False):
         with col:
             metric_card(
                 label=metric_name,
@@ -70,8 +69,8 @@ def metric_row(metrics: Dict[str, Tuple[str, Optional[str]]]) -> None:
 
 def approval_badge(
     status: str,
-    confidence: Optional[float] = None,
-    risk_class: Optional[str] = None,
+    confidence: float | None = None,
+    risk_class: str | None = None,
 ) -> None:
     """
     Display approval decision badge (large, prominent).
@@ -87,9 +86,9 @@ def approval_badge(
     # Color based on status
     status_colors = {
         "APPROVE": "#28A745",  # Green
-        "DECLINE": "#DC3545",   # Red
-        "RATED": "#FFC107",     # Orange
-        "PENDING": "#6C757D",   # Gray
+        "DECLINE": "#DC3545",  # Red
+        "RATED": "#FFC107",  # Orange
+        "PENDING": "#6C757D",  # Gray
     }
     color = status_colors.get(status, "#003DA5")  # Default to Guardian blue
 
@@ -122,7 +121,7 @@ def approval_badge(
                 st.metric("Risk Class", risk_class)
 
 
-def status_badge_row(crew_statuses: Dict[str, str]) -> None:
+def status_badge_row(crew_statuses: dict[str, str]) -> None:
     """
     Display workflow status badges for all crews.
 
@@ -147,16 +146,16 @@ def status_badge_row(crew_statuses: Dict[str, str]) -> None:
 
     status_colors = {
         "success": "#28A745",  # Green
-        "failed": "#DC3545",    # Red
-        "pending": "#FFC107",   # Orange
-        "skipped": "#6C757D",   # Gray
+        "failed": "#DC3545",  # Red
+        "pending": "#FFC107",  # Orange
+        "skipped": "#6C757D",  # Gray
     }
 
     # Create columns for each crew
     num_crews = len(crew_statuses)
     cols = st.columns(num_crews)
 
-    for col, (crew_name, status) in zip(cols, crew_statuses.items()):
+    for col, (crew_name, status) in zip(cols, crew_statuses.items(), strict=False):
         with col:
             icon = status_icons.get(status, "❓")
             color = status_colors.get(status, "#003DA5")
@@ -180,8 +179,8 @@ def status_badge_row(crew_statuses: Dict[str, str]) -> None:
 
 def metric_group(
     title: str,
-    metrics: Dict[str, Tuple[str, Optional[str]]],
-    help_text: Optional[str] = None,
+    metrics: dict[str, tuple[str, str | None]],
+    help_text: str | None = None,
 ) -> None:
     """
     Display a titled group of metrics (expandable).
@@ -207,7 +206,7 @@ def metric_group(
         metric_row(metrics)
 
 
-def validation_checklist(checks: Dict[str, bool]) -> None:
+def validation_checklist(checks: dict[str, bool]) -> None:
     """
     Display validation checklist with pass/fail status.
 
@@ -225,14 +224,13 @@ def validation_checklist(checks: Dict[str, bool]) -> None:
 
     for check_name, passed in checks.items():
         status_icon = "✅" if passed else "❌"
-        status_text = "Pass" if passed else "FAIL"
         color = "#28A745" if passed else "#DC3545"
 
         check_html = f"""
         <div style="
             padding: 8px 12px;
             margin: 4px 0;
-            background-color: {'#E8F5E9' if passed else '#FFEBEE'};
+            background-color: {"#E8F5E9" if passed else "#FFEBEE"};
             border-left: 4px solid {color};
             border-radius: 4px;
         ">

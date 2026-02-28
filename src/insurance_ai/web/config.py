@@ -13,11 +13,11 @@ Environment variables:
 import os
 from enum import Enum
 from pathlib import Path
-from typing import Optional
 
 
 class ExecutionMode(Enum):
     """Execution modes for the toolkit."""
+
     OFFLINE = "offline"
     ONLINE = "online"
 
@@ -29,10 +29,7 @@ class ExecutionMode(Enum):
 
 # Default directories (relative to repo root)
 REPO_ROOT = Path(__file__).parent.parent.parent.parent
-FIXTURES_DIR = Path(os.getenv(
-    "INSURANCE_AI_FIXTURES_DIR",
-    str(REPO_ROOT / "tests" / "fixtures")
-))
+FIXTURES_DIR = Path(os.getenv("INSURANCE_AI_FIXTURES_DIR", str(REPO_ROOT / "tests" / "fixtures")))
 
 # Execution mode
 MODE_STR = os.getenv("INSURANCE_AI_MODE", "offline").lower()
@@ -41,10 +38,11 @@ if MODE_STR not in ["offline", "online"]:
 EXECUTION_MODE = ExecutionMode(MODE_STR)
 
 # API Keys
-ANTHROPIC_API_KEY: Optional[str] = os.getenv("ANTHROPIC_API_KEY", None)
+ANTHROPIC_API_KEY: str | None = os.getenv("ANTHROPIC_API_KEY", None)
 
 
 # ===== VALIDATION =====
+
 
 def validate_offline_mode() -> bool:
     """
@@ -82,7 +80,7 @@ def validate_online_mode() -> bool:
     return True
 
 
-def validate_mode(mode: Optional[ExecutionMode] = None) -> bool:
+def validate_mode(mode: ExecutionMode | None = None) -> bool:
     """
     Validate current mode has required configuration.
 
@@ -105,6 +103,7 @@ def validate_mode(mode: Optional[ExecutionMode] = None) -> bool:
 
 
 # ===== FIXTURE PATHS =====
+
 
 def get_behavior_fixtures_dir() -> Path:
     """Get path to behavior fixtures directory."""
@@ -167,25 +166,26 @@ def list_available_scenarios() -> list[str]:
 
 # ===== GUARDIAN BRANDING =====
 
+
 class GuardianTheme:
     """Guardian Life Insurance branding colors and styling."""
 
     # Primary colors
-    PRIMARY_BLUE = "#003DA5"        # Guardian blue
-    SECONDARY_BLUE = "#0056CC"      # Lighter blue
-    ACCENT_GOLD = "#D4A574"         # Accent color
+    PRIMARY_BLUE = "#003DA5"  # Guardian blue
+    SECONDARY_BLUE = "#0056CC"  # Lighter blue
+    ACCENT_GOLD = "#D4A574"  # Accent color
 
     # Semantic colors
-    SUCCESS = "#4CAF50"             # Green
-    WARNING = "#FFC107"             # Yellow/Orange
-    ERROR = "#F44336"               # Red
-    INFO = "#2196F3"                # Light blue
+    SUCCESS = "#4CAF50"  # Green
+    WARNING = "#FFC107"  # Yellow/Orange
+    ERROR = "#F44336"  # Red
+    INFO = "#2196F3"  # Light blue
 
     # Neutrals
-    TEXT_DARK = "#333333"           # Dark gray
-    TEXT_LIGHT = "#666666"          # Medium gray
-    BACKGROUND = "#FFFFFF"          # White
-    BORDER = "#E0E0E0"              # Light gray
+    TEXT_DARK = "#333333"  # Dark gray
+    TEXT_LIGHT = "#666666"  # Medium gray
+    BACKGROUND = "#FFFFFF"  # White
+    BORDER = "#E0E0E0"  # Light gray
 
     # Fonts
     FONT_FAMILY = "Segoe UI, sans-serif"
@@ -254,7 +254,11 @@ if __name__ == "__main__":
     print("=" * 60)
     print(f"Execution mode:        {EXECUTION_MODE}")
     print(f"Fixtures directory:    {FIXTURES_DIR}")
-    print(f"Offline mode available: {validate_offline_mode() if EXECUTION_MODE == ExecutionMode.OFFLINE else 'N/A'}")
-    print(f"Online mode available:  {validate_online_mode() if EXECUTION_MODE == ExecutionMode.ONLINE else 'N/A (missing API key)'}")
+    print(
+        f"Offline mode available: {validate_offline_mode() if EXECUTION_MODE == ExecutionMode.OFFLINE else 'N/A'}"
+    )
+    print(
+        f"Online mode available:  {validate_online_mode() if EXECUTION_MODE == ExecutionMode.ONLINE else 'N/A (missing API key)'}"
+    )
     print(f"\nAvailable scenarios:   {list_available_scenarios()}")
     print("=" * 60)

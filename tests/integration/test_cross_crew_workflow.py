@@ -11,19 +11,22 @@ Validates:
 3. Multi-crew orchestration
 """
 
-import unittest
 import json
-from pathlib import Path
+import unittest
 
-from insurance_ai.crews.underwriting import (
-    UnderwritingState,
-    ProductType as UnderwritingProductType,
-    run_underwriting_crew,
+from insurance_ai.crews.reserve import (
+    ProductType as ReserveProductType,
 )
 from insurance_ai.crews.reserve import (
     ReserveState,
-    ProductType as ReserveProductType,
     run_reserve_crew,
+)
+from insurance_ai.crews.underwriting import (
+    ProductType as UnderwritingProductType,
+)
+from insurance_ai.crews.underwriting import (
+    UnderwritingState,
+    run_underwriting_crew,
 )
 
 
@@ -93,12 +96,10 @@ class TestUnderwritingToReserveWorkflow(unittest.TestCase):
         # CTE should reflect mortality impact from underwriting
         # Higher mortality adjustment (if any) should increase reserve
         base_mortality = 0.005  # Standard 55-year-old
-        expected_reserve_order_of_magnitude = benefit_base * base_mortality
+        benefit_base * base_mortality
 
         # Reserve should be meaningful (at least a few % of benefit base)
-        reserve_to_benefit_ratio = (
-            reserve_result.cte70_reserve / reserve_result.benefit_base
-        )
+        reserve_to_benefit_ratio = reserve_result.cte70_reserve / reserve_result.benefit_base
         self.assertGreater(
             reserve_to_benefit_ratio,
             0.01,

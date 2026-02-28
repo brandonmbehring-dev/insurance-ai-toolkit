@@ -6,8 +6,8 @@ FRED API integration for live market data: Treasury yields, S&P 500, VIX.
 
 from .fred_client import (
     FREDClient,
-    fetch_treasury_yields,
     fetch_market_indices,
+    fetch_treasury_yields,
     get_all_market_data,
 )
 from .market_data import (

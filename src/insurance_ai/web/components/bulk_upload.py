@@ -16,7 +16,7 @@ Usage:
 """
 
 import io
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any
 
 import pandas as pd
 import streamlit as st
@@ -60,7 +60,7 @@ EXAMPLE_DATA = [
 ]
 
 
-def validate_csv_schema(df: pd.DataFrame) -> Tuple[bool, List[str]]:
+def validate_csv_schema(df: pd.DataFrame) -> tuple[bool, list[str]]:
     """
     Validate that uploaded CSV has required columns.
 
@@ -145,7 +145,7 @@ def calculate_cte70_reserve(account_value: float, benefit_base: float, age: int)
     return benefit_base * base_factor * age_factor
 
 
-def process_single_policy(row: Dict[str, Any]) -> Dict[str, Any]:
+def process_single_policy(row: dict[str, Any]) -> dict[str, Any]:
     """
     Process a single policy through all analysis steps.
 
@@ -203,7 +203,7 @@ def process_policy_batch(df: pd.DataFrame) -> pd.DataFrame:
     return pd.DataFrame(results)
 
 
-def calculate_cohort_statistics(results_df: pd.DataFrame) -> Dict[str, Any]:
+def calculate_cohort_statistics(results_df: pd.DataFrame) -> dict[str, Any]:
     """
     Calculate aggregate statistics for processed cohort.
 
@@ -241,7 +241,7 @@ def get_template_csv() -> bytes:
     return df.to_csv(index=False).encode("utf-8")
 
 
-def render_bulk_upload_section() -> Optional[pd.DataFrame]:
+def render_bulk_upload_section() -> pd.DataFrame | None:
     """
     Render bulk upload UI section with file upload, validation, and processing.
 
@@ -379,14 +379,16 @@ def render_bulk_upload_section() -> Optional[pd.DataFrame]:
         # Detailed results table
         st.markdown("### Policy Details")
         st.dataframe(
-            results_df.style.format({
-                "account_value": "${:,.0f}",
-                "benefit_base": "${:,.0f}",
-                "cte70_reserve": "${:,.0f}",
-                "moneyness": "{:.3f}",
-                "dynamic_lapse_rate": "{:.2%}",
-                "reserve_ratio": "{:.2%}",
-            }),
+            results_df.style.format(
+                {
+                    "account_value": "${:,.0f}",
+                    "benefit_base": "${:,.0f}",
+                    "cte70_reserve": "${:,.0f}",
+                    "moneyness": "{:.3f}",
+                    "dynamic_lapse_rate": "{:.2%}",
+                    "reserve_ratio": "{:.2%}",
+                }
+            ),
             use_container_width=True,
             height=400,
         )

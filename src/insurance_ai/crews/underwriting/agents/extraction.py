@@ -6,9 +6,11 @@ Online mode: Claude Vision API on real PDF
 This agent is the first step in the underwriting workflow.
 """
 
-from typing import Any, Dict
-from ..state import UnderwritingState
+from typing import Any
+
 from insurance_ai.config import ONLINE_MODE, load_fixture
+
+from ..state import UnderwritingState
 
 
 def extraction_agent(state: UnderwritingState) -> UnderwritingState:
@@ -115,7 +117,7 @@ def extraction_agent(state: UnderwritingState) -> UnderwritingState:
     return state
 
 
-def _create_synthetic_fixture(age: int, gender: str) -> Dict[str, Any]:
+def _create_synthetic_fixture(age: int, gender: str) -> dict[str, Any]:
     """
     Create realistic synthetic health metrics for testing.
 

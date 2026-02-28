@@ -9,7 +9,6 @@ Usage:
     account_value = currency_slider("Account Value", 100, 1000, 350)
 """
 
-from typing import List, Dict, Optional, Tuple
 import streamlit as st
 
 
@@ -38,7 +37,9 @@ def scenario_selector(
         label,
         scenarios.keys(),
         format_func=lambda x: scenarios.get(x, x),
-        index=list(scenarios.keys()).index(default_scenario) if default_scenario in scenarios else 0,
+        index=list(scenarios.keys()).index(default_scenario)
+        if default_scenario in scenarios
+        else 0,
         key="scenario_selector",
     )
 
@@ -94,7 +95,7 @@ def currency_slider(
     max_value: int,
     value: int,
     step: int = 10,
-    help_text: Optional[str] = None,
+    help_text: str | None = None,
     suffix: str = "K",  # Display as thousands
 ) -> int:
     """
@@ -133,7 +134,7 @@ def percentage_slider(
     max_value: float,
     value: float,
     step: float = 0.1,
-    help_text: Optional[str] = None,
+    help_text: str | None = None,
 ) -> float:
     """
     Percentage slider (0-100 range).
@@ -162,7 +163,7 @@ def percentage_slider(
     return result / 100  # Convert to decimal
 
 
-def what_if_sliders() -> Dict[str, float]:
+def what_if_sliders() -> dict[str, float]:
     """
     What-if parameter adjustment sliders.
 
@@ -213,8 +214,8 @@ def what_if_sliders() -> Dict[str, float]:
 
 def parameter_group(
     title: str,
-    parameters: Dict[str, Tuple[str, float, float, float]],  # (label, min, max, default)
-) -> Dict[str, float]:
+    parameters: dict[str, tuple[str, float, float, float]],  # (label, min, max, default)
+) -> dict[str, float]:
     """
     Group of related parameter sliders.
 
@@ -238,7 +239,9 @@ def parameter_group(
         cols = st.columns(len(parameters))
         results = {}
 
-        for col, (param_name, (label, min_val, max_val, default)) in zip(cols, parameters.items()):
+        for col, (param_name, (label, min_val, max_val, default)) in zip(
+            cols, parameters.items(), strict=False
+        ):
             with col:
                 value = st.slider(
                     label,
@@ -310,7 +313,7 @@ def approval_decision_selector(
 
 def date_range_selector(
     label: str = "Analysis Period",
-) -> Tuple[str, str]:
+) -> tuple[str, str]:
     """
     Date range selector.
 
@@ -338,8 +341,8 @@ def date_range_selector(
 
 
 def scenario_comparison_selector(
-    available_scenarios: List[str],
-) -> List[str]:
+    available_scenarios: list[str],
+) -> list[str]:
     """
     Multi-select for scenario comparison.
 

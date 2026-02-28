@@ -18,14 +18,13 @@ Examples:
 import json
 import sys
 from pathlib import Path
-from typing import Optional
 
 import click
 
 from insurance_ai.config import ONLINE_MODE, get_config, load_fixture
 from insurance_ai.crews.underwriting import (
-    UnderwritingState,
     ProductType,
+    UnderwritingState,
 )
 from insurance_ai.crews.underwriting.workflow import run_underwriting_crew
 
@@ -119,9 +118,7 @@ def main(ctx: click.Context, online_mode: bool, offline_mode: bool, debug: bool)
     help="Output file for risk classification (JSON).",
 )
 @click.pass_context
-def underwriting(
-    ctx: click.Context, input_file: str, product: str, output: Optional[str]
-) -> None:
+def underwriting(ctx: click.Context, input_file: str, product: str, output: str | None) -> None:
     """UnderwritingCrew: Medical data extraction & risk classification.
 
     Processes medical records (PDFs or structured data) to extract health metrics
@@ -227,7 +224,7 @@ def underwriting(
     help="Output file for reserve calculation (JSON).",
 )
 @click.pass_context
-def reserve(ctx: click.Context, input_file: str, scenarios: int, output: Optional[str]) -> None:
+def reserve(ctx: click.Context, input_file: str, scenarios: int, output: str | None) -> None:
     """ReserveCrew: Regulatory reserve calculations.
 
     Calculates Principle-Based Reserves for Variable Annuities (VM-21) and
@@ -244,7 +241,7 @@ def reserve(ctx: click.Context, input_file: str, scenarios: int, output: Optiona
         # Run with custom policy data, 1000 scenarios
         insurance-ai reserve policy.json --scenarios 1000 --output reserves.json
     """
-    config = ctx.obj["config"]
+    ctx.obj["config"]
 
     click.echo(f"📋 ReserveCrew: {scenarios} scenarios", err=True)
 
@@ -278,7 +275,7 @@ def reserve(ctx: click.Context, input_file: str, scenarios: int, output: Optiona
     help="Output file for hedge recommendations (JSON).",
 )
 @click.pass_context
-def hedging(ctx: click.Context, input_file: str, output: Optional[str]) -> None:
+def hedging(ctx: click.Context, input_file: str, output: str | None) -> None:
     """HedgingCrew: Volatility calibration & hedge recommendations.
 
     Calibrates volatility surfaces (SABR/Heston), calculates option Greeks,
@@ -295,7 +292,7 @@ def hedging(ctx: click.Context, input_file: str, output: Optional[str]) -> None:
         # Run with custom portfolio
         insurance-ai hedging portfolio.json --output hedges.json
     """
-    config = ctx.obj["config"]
+    ctx.obj["config"]
 
     click.echo("🔄 HedgingCrew: Volatility calibration", err=True)
 
@@ -327,7 +324,7 @@ def hedging(ctx: click.Context, input_file: str, output: Optional[str]) -> None:
     help="Output file for behavior model results (JSON).",
 )
 @click.pass_context
-def behavior(ctx: click.Context, input_file: str, output: Optional[str]) -> None:
+def behavior(ctx: click.Context, input_file: str, output: str | None) -> None:
     """BehaviorCrew: Dynamic lapse & policyholder behavior modeling.
 
     Models dynamic policyholder behavior (surrenders, withdrawals) based on
@@ -345,7 +342,7 @@ def behavior(ctx: click.Context, input_file: str, output: Optional[str]) -> None
         # Run with custom cohort data
         insurance-ai behavior cohort.json --output behavior.json
     """
-    config = ctx.obj["config"]
+    ctx.obj["config"]
 
     click.echo("🧠 BehaviorCrew: Dynamic lapse modeling", err=True)
 
@@ -391,7 +388,7 @@ def status(ctx: click.Context) -> None:
     else:
         click.echo("⚠️  Fixtures directory not yet created")
 
-    click.echo(f"\nNext steps:")
+    click.echo("\nNext steps:")
     click.echo("1. Run a crew: insurance-ai underwriting")
     click.echo("2. View help: insurance-ai underwriting --help")
     click.echo("3. Enable online mode: ANTHROPIC_API_KEY=sk-... insurance-ai underwriting --online")

@@ -10,10 +10,11 @@ from enum import Enum
 
 class ScenarioType(Enum):
     """Scenario types by moneyness."""
-    ITM = "in_the_money"       # Account > Benefit
-    OTM = "out_the_money"       # Account < Benefit
-    ATM = "at_the_money"        # Account ≈ Benefit
-    STRESS = "stress_test"      # High withdrawal rate
+
+    ITM = "in_the_money"  # Account > Benefit
+    OTM = "out_the_money"  # Account < Benefit
+    ATM = "at_the_money"  # Account ≈ Benefit
+    STRESS = "stress_test"  # High withdrawal rate
 
 
 # Scenario metadata
@@ -88,8 +89,7 @@ def get_scenario(scenario_id: str) -> dict:
     """
     if scenario_id not in SCENARIOS:
         raise ValueError(
-            f"Scenario '{scenario_id}' not found. "
-            f"Available scenarios: {list(SCENARIOS.keys())}"
+            f"Scenario '{scenario_id}' not found. Available scenarios: {list(SCENARIOS.keys())}"
         )
     return SCENARIOS[scenario_id]
 
@@ -111,6 +111,7 @@ def get_scenario_type(scenario_id: str) -> ScenarioType:
 
 # ===== COMPARISON HELPERS =====
 
+
 def compare_scenarios(*scenario_ids: str) -> list[dict]:
     """
     Compare multiple scenarios side-by-side.
@@ -124,16 +125,16 @@ def compare_scenarios(*scenario_ids: str) -> list[dict]:
     comparison = []
     for sid in scenario_ids:
         scenario = get_scenario(sid)
-        comparison.append({
-            "id": sid,
-            "label": scenario["label"],
-            "moneyness": scenario["moneyness"],
-            "account_value": scenario["account_value"],
-            "withdrawal_rate": (
-                scenario["annual_withdrawal"] / scenario["account_value"]
-            ),
-            "key_insight": scenario["key_insight"],
-        })
+        comparison.append(
+            {
+                "id": sid,
+                "label": scenario["label"],
+                "moneyness": scenario["moneyness"],
+                "account_value": scenario["account_value"],
+                "withdrawal_rate": (scenario["annual_withdrawal"] / scenario["account_value"]),
+                "key_insight": scenario["key_insight"],
+            }
+        )
     return comparison
 
 
@@ -145,25 +146,25 @@ def describe_scenario(scenario_id: str) -> str:
     """
     scenario = get_scenario(scenario_id)
     return f"""
-    **{scenario['label']}**
+    **{scenario["label"]}**
 
-    {scenario['description']}
+    {scenario["description"]}
 
     **Key Metrics:**
-    - Moneyness: {scenario['moneyness']:.3f}
-    - Account Value: ${scenario['account_value']:,}
-    - Benefit Base: ${scenario['benefit_base']:,}
-    - Annual Withdrawal: ${scenario['annual_withdrawal']:,}
-    - Time to Maturity: {scenario['time_to_maturity_years']} years
+    - Moneyness: {scenario["moneyness"]:.3f}
+    - Account Value: ${scenario["account_value"]:,}
+    - Benefit Base: ${scenario["benefit_base"]:,}
+    - Annual Withdrawal: ${scenario["annual_withdrawal"]:,}
+    - Time to Maturity: {scenario["time_to_maturity_years"]} years
 
     **Key Insight:**
-    {scenario['key_insight']}
+    {scenario["key_insight"]}
 
     **Expected Reserve Impact:**
-    {scenario['reserve_expectation']}
+    {scenario["reserve_expectation"]}
 
     **Expected Lapse Behavior:**
-    {scenario['lapse_expectation']}
+    {scenario["lapse_expectation"]}
     """
 
 
@@ -181,8 +182,10 @@ if __name__ == "__main__":
         print(f"Moneyness: {scenario['moneyness']:.3f}")
         print(f"Account Value: ${scenario['account_value']:,}")
         print(f"Benefit Base: ${scenario['benefit_base']:,}")
-        print(f"Annual Withdrawal: ${scenario['annual_withdrawal']:,} "
-              f"({scenario['annual_withdrawal']/scenario['account_value']:.1%})")
+        print(
+            f"Annual Withdrawal: ${scenario['annual_withdrawal']:,} "
+            f"({scenario['annual_withdrawal'] / scenario['account_value']:.1%})"
+        )
         print(f"Time to Maturity: {scenario['time_to_maturity_years']} years")
         print(f"\nInsight: {scenario['key_insight']}")
 

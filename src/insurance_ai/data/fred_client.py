@@ -17,7 +17,7 @@ Usage:
 import os
 from dataclasses import dataclass
 from datetime import datetime, timedelta
-from typing import Any, Dict, Optional
+from typing import Any
 
 import streamlit as st
 
@@ -58,8 +58,8 @@ FIXTURE_MARKET_INDICES = {
 class FREDClient:
     """FRED API client wrapper with caching and fallback."""
 
-    api_key: Optional[str] = None
-    _fred: Optional[Any] = None
+    api_key: str | None = None
+    _fred: Any | None = None
 
     def __post_init__(self) -> None:
         """Initialize FRED client if API key is available."""
@@ -74,7 +74,7 @@ class FREDClient:
             except Exception:
                 self._fred = None
 
-    def _get_api_key(self) -> Optional[str]:
+    def _get_api_key(self) -> str | None:
         """Get FRED API key from Streamlit secrets or environment."""
         # Try Streamlit secrets first
         try:
@@ -90,7 +90,7 @@ class FREDClient:
         """Check if FRED client is available."""
         return self._fred is not None
 
-    def fetch_series_latest(self, series_id: str) -> Optional[float]:
+    def fetch_series_latest(self, series_id: str) -> float | None:
         """
         Fetch the latest value for a FRED series.
 
@@ -127,7 +127,7 @@ class FREDClient:
 
 
 # Module-level client instance (lazy initialization)
-_client: Optional[FREDClient] = None
+_client: FREDClient | None = None
 
 
 def _get_client() -> FREDClient:
@@ -139,7 +139,7 @@ def _get_client() -> FREDClient:
 
 
 @st.cache_data(ttl=86400)  # 24-hour cache for Treasury/Fed Funds
-def fetch_treasury_yields() -> Dict[str, float]:
+def fetch_treasury_yields() -> dict[str, float]:
     """
     Fetch current Treasury yields from FRED.
 
@@ -178,7 +178,7 @@ def fetch_fed_funds_rate() -> float:
 
 
 @st.cache_data(ttl=14400)  # 4-hour cache for indices (more volatile)
-def fetch_market_indices() -> Dict[str, float]:
+def fetch_market_indices() -> dict[str, float]:
     """
     Fetch S&P 500 and VIX from FRED.
 
@@ -199,7 +199,7 @@ def fetch_market_indices() -> Dict[str, float]:
     return indices
 
 
-def get_all_market_data() -> Dict[str, Any]:
+def get_all_market_data() -> dict[str, Any]:
     """
     Fetch all market data in one call.
 

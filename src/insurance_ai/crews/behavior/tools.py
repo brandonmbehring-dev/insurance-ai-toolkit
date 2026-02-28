@@ -7,10 +7,7 @@ Helper functions for:
 - Rate sensitivity analysis for policyholder behavior
 """
 
-import math
 import random
-from typing import List, Tuple
-
 
 # ===== LAPSE RATE CALCULATIONS =====
 
@@ -128,7 +125,7 @@ def simulate_lapse_path(
     risk_free_rate: float,
     market_vol: float,
     num_years: int,
-) -> List[float]:
+) -> list[float]:
     """
     Simulate annual lapse rates for a single path.
 
@@ -143,9 +140,7 @@ def simulate_lapse_path(
     lapse_rates = []
 
     # Start with dynamic lapse
-    current_lapse = calculate_dynamic_lapse_rate(
-        base_lapse, moneyness, risk_free_rate, market_vol
-    )
+    current_lapse = calculate_dynamic_lapse_rate(base_lapse, moneyness, risk_free_rate, market_vol)
 
     for year in range(num_years):
         # Gradually revert to base rate over time
@@ -170,7 +165,7 @@ def simulate_withdrawal_path(
     annual_withdrawal: float,
     num_years: int,
     return_rate: float,
-) -> Tuple[List[float], int]:
+) -> tuple[list[float], int]:
     """
     Simulate account value path with withdrawals.
 
@@ -215,7 +210,7 @@ def simulate_behavioral_paths(
     risk_free_rate: float,
     market_vol: float,
     seed: int,
-) -> Tuple[List[List[float]], List[bool]]:
+) -> tuple[list[list[float]], list[bool]]:
     """
     Simulate account value paths with lapse and withdrawal behavior.
 
@@ -283,7 +278,7 @@ def calculate_rate_sensitivity(
     moneyness: float,
     base_rf_rate: float,
     rate_elasticity: float = 0.02,
-) -> Tuple[float, float]:
+) -> tuple[float, float]:
     """
     Calculate lapse rate sensitivity to interest rate changes.
 
@@ -291,7 +286,7 @@ def calculate_rate_sensitivity(
         (lapse_if_rates_up_100bps, lapse_if_rates_down_100bps)
     """
     # Base dynamic lapse
-    base_lapse = calculate_dynamic_lapse_rate(
+    calculate_dynamic_lapse_rate(
         base_rate, moneyness, base_rf_rate, 0.18, rate_elasticity=rate_elasticity
     )
 

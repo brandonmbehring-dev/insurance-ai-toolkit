@@ -8,15 +8,12 @@ Tests cover:
 5. Health metric validation
 """
 
-import pytest
-from pathlib import Path
-
 from insurance_ai.crews.underwriting import (
+    ProductType,
+    RiskClass,
+    UnderwritingState,
     build_underwriting_crew,
     run_underwriting_crew,
-    UnderwritingState,
-    RiskClass,
-    ProductType,
 )
 
 
@@ -66,7 +63,9 @@ class TestUnderwritingCrew:
 
         # High-risk with mortality adjustment > 50% should be declined for VA + GLWB
         assert result.risk_class == RiskClass.DECLINED
-        assert "exceeds" in result.underwriting_notes or "does not meet" in result.underwriting_notes
+        assert (
+            "exceeds" in result.underwriting_notes or "does not meet" in result.underwriting_notes
+        )
 
     def test_high_risk_fia_adjusted_rate(self) -> None:
         """Test high-risk applicant for FIA has significant mortality adjustment.
@@ -289,7 +288,10 @@ class TestUnderwritingCrew:
         result_nonsmoker = run_underwriting_crew(state_nonsmoker)
 
         # Smoker should have higher mortality adjustment
-        assert result_smoker.mortality_adjustment_percent >= result_nonsmoker.mortality_adjustment_percent
+        assert (
+            result_smoker.mortality_adjustment_percent
+            >= result_nonsmoker.mortality_adjustment_percent
+        )
 
     def test_workflow_completeness(self) -> None:
         """Test that workflow completes all stages.
@@ -309,7 +311,9 @@ class TestUnderwritingCrew:
         assert result.extracted_health_metrics  # Extraction stage
         assert result.extraction_confidence > 0  # Extraction stage
         assert result.vbt_mortality_class  # Classification stage
-        assert result.risk_class != RiskClass.PENDING_REVIEW or result.extraction_confidence < 0.70  # Approval stage
+        assert (
+            result.risk_class != RiskClass.PENDING_REVIEW or result.extraction_confidence < 0.70
+        )  # Approval stage
         assert result.underwriting_notes  # Approval stage
 
     def test_multiple_products_same_applicant(self) -> None:
@@ -331,7 +335,8 @@ class TestUnderwritingCrew:
         # All products should be evaluated
         assert len(results) == 3
         assert all(
-            r.risk_class in [
+            r.risk_class
+            in [
                 RiskClass.APPROVED,
                 RiskClass.APPROVED_WITH_FLATEX,
                 RiskClass.PENDING_REVIEW,

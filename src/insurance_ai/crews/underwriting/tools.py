@@ -7,11 +7,10 @@ These tools wrap functions from the annuity-pricing codebase:
 - validate_health_metrics: Check consistency of extracted metrics
 """
 
-from typing import Any, Dict
-from pathlib import Path
+from typing import Any
 
 
-def load_mortality_table(gender: str) -> Dict[str, Any]:
+def load_mortality_table(gender: str) -> dict[str, Any]:
     """
     Load SOA 2012 IAM mortality table for specified gender.
 
@@ -54,9 +53,9 @@ def load_mortality_table(gender: str) -> Dict[str, Any]:
 
 
 def calculate_health_adjustment(
-    health_metrics: Dict[str, Any],
+    health_metrics: dict[str, Any],
     base_adjustment: float = 1.0,
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """
     Calculate mortality adjustment factor from health metrics.
 
@@ -137,7 +136,7 @@ def check_approval_rules(
     age: int,
     mortality_adjustment_percent: float,
     extraction_confidence: float,
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """
     Check product-specific approval rules.
 
@@ -204,7 +203,9 @@ def check_approval_rules(
         return {
             "approved": True,
             "class": "APPROVED_WITH_FLATEX",
-            "reasons": [f"Approved with flatex rider ({mortality_adjustment_percent:.0f}% adjustment)"],
+            "reasons": [
+                f"Approved with flatex rider ({mortality_adjustment_percent:.0f}% adjustment)"
+            ],
         }
 
     return {
@@ -214,7 +215,7 @@ def check_approval_rules(
     }
 
 
-def validate_health_metrics(metrics: Dict[str, Any]) -> Dict[str, Any]:
+def validate_health_metrics(metrics: dict[str, Any]) -> dict[str, Any]:
     """
     Validate consistency of extracted health metrics.
 

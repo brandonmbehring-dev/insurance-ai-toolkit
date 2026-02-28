@@ -7,8 +7,6 @@ Implements Decision 4: Graceful Degradation + Warnings
 - Lists error messages without stopping workflow execution
 """
 
-from typing import Optional
-
 import streamlit as st
 
 
@@ -222,7 +220,8 @@ def display_scenario_info() -> None:
 
     # Get metadata
     metadata = SCENARIO_METADATA.get(
-        scenario_id.split("_")[1], {}  # Extract scenario type from ID
+        scenario_id.split("_")[1],
+        {},  # Extract scenario type from ID
     )
 
     if metadata:
@@ -272,6 +271,7 @@ def display_validation_warnings() -> None:
 
 # ===== CONTEXT MANAGERS FOR ERROR HANDLING =====
 
+
 class StreamlitErrorHandler:
     """
     Context manager for safe error handling in Streamlit.
@@ -295,11 +295,13 @@ class StreamlitErrorHandler:
 
             # Log error
             error_msg = str(exc_val) if exc_val else str(exc_type)
-            st.session_state.execution_errors.append({
-                "crew": self.crew_name,
-                "error": error_msg[:200],  # Truncate long messages
-                "timestamp": __import__("datetime").datetime.now().isoformat(),
-            })
+            st.session_state.execution_errors.append(
+                {
+                    "crew": self.crew_name,
+                    "error": error_msg[:200],  # Truncate long messages
+                    "timestamp": __import__("datetime").datetime.now().isoformat(),
+                }
+            )
 
             # Return True to suppress the exception (don't re-raise)
             return True

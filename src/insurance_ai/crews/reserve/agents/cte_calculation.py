@@ -3,9 +3,8 @@
 Calculates Conditional Tail Expectation (CTE) and percentiles of reserve distribution.
 """
 
-from typing import Any, Dict, List
-from insurance_ai.crews.reserve.state import ReserveState
 from insurance_ai.crews.reserve import tools
+from insurance_ai.crews.reserve.state import ReserveState
 
 
 def cte_calculation_agent(state: ReserveState) -> ReserveState:
@@ -36,11 +35,9 @@ def cte_calculation_agent(state: ReserveState) -> ReserveState:
     state.mean_reserve = mean_reserve
 
     # Calculate percentiles
-    percentile_reserves: Dict[int, float] = {}
+    percentile_reserves: dict[int, float] = {}
     for percentile in [10, 25, 50, 75, 90]:
-        percentile_reserves[percentile] = tools.calculate_percentile(
-            reserve_paths, percentile
-        )
+        percentile_reserves[percentile] = tools.calculate_percentile(reserve_paths, percentile)
     state.percentile_reserves = percentile_reserves
 
     # Get median (50th percentile)

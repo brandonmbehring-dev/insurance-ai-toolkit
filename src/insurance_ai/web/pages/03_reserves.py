@@ -9,14 +9,13 @@ import numpy as np
 import streamlit as st
 
 from insurance_ai.web import __version__
-from insurance_ai.web.components.export import render_crew_export_section
 from insurance_ai.web.components.charts import (
-    display_metric_row,
-    plot_cte70_histogram,
     plot_convergence,
+    plot_cte70_histogram,
     plot_lapse_curve,
     plot_sensitivity_tornado,
 )
+from insurance_ai.web.components.export import render_crew_export_section
 
 
 def render_reserves_page() -> None:
@@ -43,7 +42,7 @@ def render_reserves_page() -> None:
         return
 
     reserve_result = st.session_state.get("reserve_result", {})
-    fixture = st.session_state.get("current_fixture", {})
+    st.session_state.get("current_fixture", {})
 
     # ===== GUARDIAN CALLOUT =====
     st.markdown("---")
@@ -100,7 +99,7 @@ def render_reserves_page() -> None:
 
     st.caption(
         f"CTE70 = 70th percentile of reserve distribution. "
-        f"Tail ratio: {cte70/mean_reserve:.2f}x mean reserve"
+        f"Tail ratio: {cte70 / mean_reserve:.2f}x mean reserve"
     )
 
     # ===== CONVERGENCE ANALYSIS =====
@@ -154,14 +153,12 @@ def render_reserves_page() -> None:
     st.plotly_chart(fig_tornado, use_container_width=True)
 
     # Ranking
-    sensitivities = {
-        name: (high - low) for name, (low, high) in drivers.items()
-    }
+    sensitivities = {name: (high - low) for name, (low, high) in drivers.items()}
     sorted_sens = sorted(sensitivities.items(), key=lambda x: x[1], reverse=True)
 
     st.markdown("**Ranking by Impact (high to low):**")
     for i, (factor, impact) in enumerate(sorted_sens, 1):
-        st.caption(f"{i}. {factor}: ${impact:,.0f} (+{impact/cte70:.1%})")
+        st.caption(f"{i}. {factor}: ${impact:,.0f} (+{impact / cte70:.1%})")
 
     # ===== LAPSE SENSITIVITY =====
     st.markdown("---")
@@ -175,7 +172,7 @@ def render_reserves_page() -> None:
         # Generate lapse curve
         moneyness_range = np.linspace(0.6, 1.5, 20)
         lapse_range = [0.12 - (0.04 * m) + 0.02 for m in moneyness_range]  # Demo curve
-        lapse_range = [max(0.01, min(0.25, l)) for l in lapse_range]  # Bound to 1-25%
+        lapse_range = [max(0.01, min(0.25, val)) for val in lapse_range]  # Bound to 1-25%
 
         fig_lapse = plot_lapse_curve(
             moneyness_values=moneyness_range.tolist(),
@@ -253,7 +250,9 @@ def render_reserves_page() -> None:
 
     # ===== FOOTER =====
     st.markdown("---")
-    st.caption(f"Reserve Crew v{__version__} | VM-21 Educational Prototype | Not for regulatory filing")
+    st.caption(
+        f"Reserve Crew v{__version__} | VM-21 Educational Prototype | Not for regulatory filing"
+    )
 
 
 if __name__ == "__main__":

@@ -13,8 +13,8 @@ Workflow:
 Output: Regulatory reserve with CTE70, risk margin, sensitivity analysis.
 """
 
+from .state import CalculationMethod, ProductType, ReserveState
 from .workflow import build_reserve_crew, run_reserve_crew
-from .state import ReserveState, ProductType, CalculationMethod
 
 __all__ = [
     "build_reserve_crew",

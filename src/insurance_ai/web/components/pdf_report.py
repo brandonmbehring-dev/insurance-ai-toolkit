@@ -11,9 +11,8 @@ Usage:
     )
 """
 
-import io
 from datetime import datetime
-from typing import Any, Dict, Optional
+from typing import Any
 
 import streamlit as st
 
@@ -33,7 +32,7 @@ def _format_value(value: Any) -> str:
         return str(value)
 
 
-def _generate_section(title: str, data: Dict[str, Any]) -> str:
+def _generate_section(title: str, data: dict[str, Any]) -> str:
     """Generate a markdown section for a crew result."""
     lines = [
         f"## {title}",
@@ -85,10 +84,12 @@ def generate_markdown_report() -> str:
     hdg = st.session_state.get("hedging_result", {})
     beh = st.session_state.get("behavior_result", {})
 
-    lines.extend([
-        "## Executive Summary",
-        "",
-    ])
+    lines.extend(
+        [
+            "## Executive Summary",
+            "",
+        ]
+    )
 
     if uw:
         approval = uw.get("approval_decision", "N/A")
@@ -98,7 +99,11 @@ def generate_markdown_report() -> str:
     if res:
         cte70 = res.get("cte70_reserve", 0)
         av = res.get("account_value", 0)
-        lines.append(f"- **CTE70 Reserve**: ${cte70:,.0f} ({cte70/av:.1%} of AV)" if av else f"- **CTE70 Reserve**: ${cte70:,.0f}")
+        lines.append(
+            f"- **CTE70 Reserve**: ${cte70:,.0f} ({cte70 / av:.1%} of AV)"
+            if av
+            else f"- **CTE70 Reserve**: ${cte70:,.0f}"
+        )
 
     if hdg:
         delta = hdg.get("delta", 0)
@@ -114,14 +119,19 @@ def generate_markdown_report() -> str:
 
     # Underwriting Section
     if uw:
-        lines.append(_generate_section("Underwriting Results", {
-            "Policy ID": uw.get("policy_id", "N/A"),
-            "Approval Decision": uw.get("approval_decision", "N/A"),
-            "Risk Class": uw.get("risk_class", "N/A"),
-            "Confidence Score": uw.get("confidence_score", 0),
-            "Extraction Confidence": uw.get("extraction_confidence", 0),
-            "Product Type": "VA + GLWB",
-        }))
+        lines.append(
+            _generate_section(
+                "Underwriting Results",
+                {
+                    "Policy ID": uw.get("policy_id", "N/A"),
+                    "Approval Decision": uw.get("approval_decision", "N/A"),
+                    "Risk Class": uw.get("risk_class", "N/A"),
+                    "Confidence Score": uw.get("confidence_score", 0),
+                    "Extraction Confidence": uw.get("extraction_confidence", 0),
+                    "Product Type": "VA + GLWB",
+                },
+            )
+        )
     else:
         lines.append(_generate_section("Underwriting Results", {}))
 
@@ -129,64 +139,81 @@ def generate_markdown_report() -> str:
     if res:
         avg_res = res.get("avg_reserve", 1)
         cte70 = res.get("cte70_reserve", 0)
-        lines.append(_generate_section("Reserve Analysis (VM-21)", {
-            "Account Value": res.get("account_value", 0),
-            "CTE70 Reserve": cte70,
-            "Mean Reserve": avg_res,
-            "Number of Scenarios": res.get("num_scenarios", 0),
-            "Tail Ratio (CTE70/Mean)": cte70 / avg_res if avg_res > 0 else 0,
-        }))
+        lines.append(
+            _generate_section(
+                "Reserve Analysis (VM-21)",
+                {
+                    "Account Value": res.get("account_value", 0),
+                    "CTE70 Reserve": cte70,
+                    "Mean Reserve": avg_res,
+                    "Number of Scenarios": res.get("num_scenarios", 0),
+                    "Tail Ratio (CTE70/Mean)": cte70 / avg_res if avg_res > 0 else 0,
+                },
+            )
+        )
     else:
         lines.append(_generate_section("Reserve Analysis (VM-21)", {}))
 
     # Hedging Section
     if hdg:
-        lines.append(_generate_section("Hedging Analysis (Greeks)", {
-            "Delta": hdg.get("delta", 0),
-            "Gamma": hdg.get("gamma", 0),
-            "Vega": hdg.get("vega", 0),
-            "Theta": hdg.get("theta", 0),
-            "Rho": hdg.get("rho", 0),
-            "Hedge Action": hdg.get("hedge_action", "N/A"),
-            "Hedge Cost": hdg.get("hedge_cost", 0),
-            "Delta Reduction": hdg.get("delta_reduction", 0),
-            "Vega Reduction": hdg.get("vega_reduction", 0),
-        }))
+        lines.append(
+            _generate_section(
+                "Hedging Analysis (Greeks)",
+                {
+                    "Delta": hdg.get("delta", 0),
+                    "Gamma": hdg.get("gamma", 0),
+                    "Vega": hdg.get("vega", 0),
+                    "Theta": hdg.get("theta", 0),
+                    "Rho": hdg.get("rho", 0),
+                    "Hedge Action": hdg.get("hedge_action", "N/A"),
+                    "Hedge Cost": hdg.get("hedge_cost", 0),
+                    "Delta Reduction": hdg.get("delta_reduction", 0),
+                    "Vega Reduction": hdg.get("vega_reduction", 0),
+                },
+            )
+        )
     else:
         lines.append(_generate_section("Hedging Analysis (Greeks)", {}))
 
     # Behavior Section
     if beh:
-        lines.append(_generate_section("Behavior Analysis", {
-            "Moneyness": beh.get("moneyness", 0),
-            "Base Lapse Rate": beh.get("base_lapse_rate", 0),
-            "Dynamic Lapse Rate": beh.get("dynamic_lapse_rate", 0),
-            "Annual Withdrawal Rate": beh.get("annual_withdrawal_rate", 0),
-            "Annual Withdrawal ($)": beh.get("annual_withdrawal_dollars", 0),
-            "Life Expectancy (Years)": beh.get("life_expectancy_years", 0),
-            "Probability In-Force": beh.get("probability_in_force", 0),
-        }))
+        lines.append(
+            _generate_section(
+                "Behavior Analysis",
+                {
+                    "Moneyness": beh.get("moneyness", 0),
+                    "Base Lapse Rate": beh.get("base_lapse_rate", 0),
+                    "Dynamic Lapse Rate": beh.get("dynamic_lapse_rate", 0),
+                    "Annual Withdrawal Rate": beh.get("annual_withdrawal_rate", 0),
+                    "Annual Withdrawal ($)": beh.get("annual_withdrawal_dollars", 0),
+                    "Life Expectancy (Years)": beh.get("life_expectancy_years", 0),
+                    "Probability In-Force": beh.get("probability_in_force", 0),
+                },
+            )
+        )
     else:
         lines.append(_generate_section("Behavior Analysis", {}))
 
     # Footer
-    lines.extend([
-        "---",
-        "",
-        "## Disclaimer",
-        "",
-        "This report is generated by InsuranceAI Toolkit for **educational and demonstration purposes only**.",
-        "It should not be used for actual insurance decisions, regulatory filings, or production systems.",
-        "",
-        "---",
-        "",
-        f"*Report generated by InsuranceAI Toolkit v{st.session_state.get('__version__', '0.2.1')}*",
-    ])
+    lines.extend(
+        [
+            "---",
+            "",
+            "## Disclaimer",
+            "",
+            "This report is generated by InsuranceAI Toolkit for **educational and demonstration purposes only**.",
+            "It should not be used for actual insurance decisions, regulatory filings, or production systems.",
+            "",
+            "---",
+            "",
+            f"*Report generated by InsuranceAI Toolkit v{st.session_state.get('__version__', '0.2.1')}*",
+        ]
+    )
 
     return "\n".join(lines)
 
 
-def generate_pdf_report() -> Optional[bytes]:
+def generate_pdf_report() -> bytes | None:
     """
     Generate a PDF report using fpdf2.
 
@@ -212,7 +239,7 @@ def generate_pdf_report() -> Optional[bytes]:
     pdf.ln(10)
 
     # Helper function to add section
-    def add_section(title: str, data: Dict[str, Any]) -> None:
+    def add_section(title: str, data: dict[str, Any]) -> None:
         pdf.set_font("Helvetica", "B", 12)
         pdf.cell(0, 8, title, ln=True)
         pdf.set_font("Helvetica", "", 10)
@@ -234,29 +261,41 @@ def generate_pdf_report() -> Optional[bytes]:
     beh = st.session_state.get("behavior_result", {})
 
     if uw:
-        add_section("Underwriting Results", {
-            "Policy ID": uw.get("policy_id", "N/A"),
-            "Approval": uw.get("approval_decision", "N/A"),
-            "Confidence": uw.get("confidence_score", 0),
-        })
+        add_section(
+            "Underwriting Results",
+            {
+                "Policy ID": uw.get("policy_id", "N/A"),
+                "Approval": uw.get("approval_decision", "N/A"),
+                "Confidence": uw.get("confidence_score", 0),
+            },
+        )
 
     if res:
-        add_section("Reserve Analysis", {
-            "Account Value": res.get("account_value", 0),
-            "CTE70 Reserve": res.get("cte70_reserve", 0),
-        })
+        add_section(
+            "Reserve Analysis",
+            {
+                "Account Value": res.get("account_value", 0),
+                "CTE70 Reserve": res.get("cte70_reserve", 0),
+            },
+        )
 
     if hdg:
-        add_section("Hedging Analysis", {
-            "Delta": hdg.get("delta", 0),
-            "Hedge Cost": hdg.get("hedge_cost", 0),
-        })
+        add_section(
+            "Hedging Analysis",
+            {
+                "Delta": hdg.get("delta", 0),
+                "Hedge Cost": hdg.get("hedge_cost", 0),
+            },
+        )
 
     if beh:
-        add_section("Behavior Analysis", {
-            "Moneyness": beh.get("moneyness", 0),
-            "Dynamic Lapse": beh.get("dynamic_lapse_rate", 0),
-        })
+        add_section(
+            "Behavior Analysis",
+            {
+                "Moneyness": beh.get("moneyness", 0),
+                "Dynamic Lapse": beh.get("dynamic_lapse_rate", 0),
+            },
+        )
 
     # Footer
     pdf.ln(10)
