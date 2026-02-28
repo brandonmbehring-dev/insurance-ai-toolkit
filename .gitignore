@@ -46,3 +46,15 @@ Thumbs.db
 # Logs
 *.log
 logs/
+
+# Internal AI assistant files
+CLAUDE.md
+CURRENT_WORK.md
+.mcp.json
+.claude/
+
+# Security - secrets and credentials
+*.key
+*.pem
+*credentials*
+*.secret
