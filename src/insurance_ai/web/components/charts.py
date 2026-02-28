@@ -311,7 +311,7 @@ def plot_greek_heatmap(
     volatilities: List[float],
     greek_matrix: np.ndarray,
     greek_name: str = "Delta",
-    title: str = "Greeks Sensitivity Surface",
+    title: str = None,
 ) -> go.Figure:
     """
     Plot heatmap of Greek value across price and vol dimensions.
@@ -326,6 +326,9 @@ def plot_greek_heatmap(
     Returns:
         Plotly Figure
     """
+    if title is None:
+        title = f"{greek_name} Sensitivity Surface"
+
     colors = get_guardian_colors()
 
     fig = go.Figure(

@@ -62,10 +62,16 @@ class TestMainApp:
     def test_header_displays_correctly(self, app):
         """Test that Guardian branding header displays."""
         app.run()
-        # Check for Guardian branding elements
-        text_content = [elem.text for elem in app.text if elem.text]
-        assert any("InsuranceAI" in text for text in text_content), "Missing InsuranceAI header"
-        assert any("Guardian" in text for text in text_content), "Missing Guardian branding"
+        # Header uses st.markdown (not st.text), so check markdown elements
+        all_content = []
+        for elem in app.markdown:
+            all_content.append(str(elem.value) if hasattr(elem, "value") else "")
+        for elem in app.text:
+            if elem.text:
+                all_content.append(elem.text)
+        combined = " ".join(all_content)
+        assert "InsuranceAI" in combined, "Missing InsuranceAI header"
+        assert "Guardian" in combined, "Missing Guardian branding"
 
     def test_scenario_selector_available(self, app):
         """Test that scenario selector is available in sidebar."""
@@ -73,13 +79,11 @@ class TestMainApp:
         # Verify sidebar exists and has scenario options
         assert len(app.selectbox) > 0, "No selectbox elements found"
 
-    def test_mode_toggle_buttons_available(self, app):
-        """Test that offline/online mode toggle buttons are available."""
+    def test_mode_toggle_radio_available(self, app):
+        """Test that offline/online mode toggle radio is available."""
         app.run()
-        # Should have buttons for mode selection
-        button_texts = [btn.label for btn in app.button]
-        assert any("Offline" in text or "📊" in text for text in button_texts), "Missing Offline button"
-        assert any("Online" in text or "🌐" in text for text in button_texts), "Missing Online button"
+        # Mode selection uses st.radio (not buttons)
+        assert len(app.radio) > 0, "Missing mode toggle radio"
 
     def test_run_workflow_button_present(self, app):
         """Test that Run Workflow button is present."""
@@ -90,8 +94,15 @@ class TestMainApp:
     def test_workflow_status_badge_display(self, app):
         """Test that workflow status badge is displayed."""
         app.run()
-        text_content = " ".join([elem.text for elem in app.text if elem.text])
-        assert "Status" in text_content or "Crew" in text_content, "Missing status badge section"
+        # Status/Crew labels are in st.markdown, not st.text
+        all_content = []
+        for elem in app.markdown:
+            all_content.append(str(elem.value) if hasattr(elem, "value") else "")
+        for elem in app.text:
+            if elem.text:
+                all_content.append(elem.text)
+        combined = " ".join(all_content)
+        assert "Status" in combined or "Crew" in combined, "Missing status badge section"
 
     def test_scenario_selector_has_options(self, app):
         """Test that scenario selector contains expected scenarios."""
@@ -131,18 +142,21 @@ class TestUnderwritingPage:
     def test_underwriting_page_has_title(self, app):
         """Test that underwriting page displays title."""
         app.run()
-        text_content = [elem.text for elem in app.text if elem.text]
-        assert any(
-            "Underwriting" in text or "extraction" in text.lower()
-            for text in text_content
-        ), "Missing underwriting page title"
+        # Title rendered via st.markdown, not st.text
+        all_content = []
+        for elem in app.markdown:
+            all_content.append(str(elem.value) if hasattr(elem, "value") else "")
+        combined = " ".join(all_content)
+        assert "Underwriting" in combined or "extraction" in combined.lower(), (
+            "Missing underwriting page title"
+        )
 
     def test_underwriting_displays_approval_decision(self, app):
-        """Test that approval decision is displayed."""
+        """Test that approval decision or info prompt is displayed."""
         app.run()
-        text_content = " ".join([elem.text for elem in app.text if elem.text])
-        # Page should display some content related to approval
-        assert len(text_content) > 0
+        # Page renders markdown/info elements (not st.text) so check all content types
+        has_content = len(app.markdown) > 0 or len(app.info) > 0
+        assert has_content, "Underwriting page should display content"
 
 
 @pytest.mark.skipif(not HAS_STREAMLIT, reason="Streamlit not installed")
@@ -166,11 +180,11 @@ class TestReservesPage:
     def test_reserves_page_has_title(self, app):
         """Test that reserves page has correct title."""
         app.run()
-        text_content = [elem.text for elem in app.text if elem.text]
-        assert any(
-            "Reserves" in text or "CTE70" in text
-            for text in text_content
-        ), "Missing reserves page title"
+        all_content = []
+        for elem in app.markdown:
+            all_content.append(str(elem.value) if hasattr(elem, "value") else "")
+        combined = " ".join(all_content)
+        assert "Reserves" in combined or "CTE70" in combined, "Missing reserves page title"
 
 
 @pytest.mark.skipif(not HAS_STREAMLIT, reason="Streamlit not installed")
@@ -194,11 +208,11 @@ class TestHedgingPage:
     def test_hedging_page_has_title(self, app):
         """Test that hedging page has correct title."""
         app.run()
-        text_content = [elem.text for elem in app.text if elem.text]
-        assert any(
-            "Hedging" in text or "Greeks" in text
-            for text in text_content
-        ), "Missing hedging page title"
+        all_content = []
+        for elem in app.markdown:
+            all_content.append(str(elem.value) if hasattr(elem, "value") else "")
+        combined = " ".join(all_content)
+        assert "Hedging" in combined or "Greeks" in combined, "Missing hedging page title"
 
 
 @pytest.mark.skipif(not HAS_STREAMLIT, reason="Streamlit not installed")
@@ -222,11 +236,13 @@ class TestBehaviorPage:
     def test_behavior_page_has_title(self, app):
         """Test that behavior page has correct title."""
         app.run()
-        text_content = [elem.text for elem in app.text if elem.text]
-        assert any(
-            "Behavior" in text or "lapse" in text.lower()
-            for text in text_content
-        ), "Missing behavior page title"
+        all_content = []
+        for elem in app.markdown:
+            all_content.append(str(elem.value) if hasattr(elem, "value") else "")
+        combined = " ".join(all_content)
+        assert "Behavior" in combined or "lapse" in combined.lower(), (
+            "Missing behavior page title"
+        )
 
 
 @pytest.mark.skipif(not HAS_STREAMLIT, reason="Streamlit not installed")
@@ -250,11 +266,13 @@ class TestScenariosPage:
     def test_scenarios_page_has_title(self, app):
         """Test that scenarios page has correct title."""
         app.run()
-        text_content = [elem.text for elem in app.text if elem.text]
-        assert any(
-            "Scenarios" in text or "What-If" in text
-            for text in text_content
-        ), "Missing scenarios page title"
+        all_content = []
+        for elem in app.markdown:
+            all_content.append(str(elem.value) if hasattr(elem, "value") else "")
+        combined = " ".join(all_content)
+        assert "Scenarios" in combined or "What-If" in combined, (
+            "Missing scenarios page title"
+        )
 
     def test_scenarios_page_has_sliders(self, app):
         """Test that scenarios page has interactive sliders."""

@@ -44,8 +44,8 @@ def format_currency(
     if math.isnan(value) or math.isinf(value):
         return f"{symbol}N/A"
 
-    format_spec = f":,.{decimals}f"
-    formatted = f"{value{format_spec}}"
+    format_spec = f",.{decimals}f"
+    formatted = f"{value:{format_spec}}"
     return f"{symbol}{formatted}"
 
 
@@ -80,8 +80,8 @@ def format_percentage(
     # Convert decimal to percentage if needed
     pct_value = value * 100 if as_decimal else value
 
-    format_spec = f":.{decimals}f"
-    return f"{pct_value{format_spec}}%"
+    format_spec = f".{decimals}f"
+    return f"{pct_value:{format_spec}}%"
 
 
 def format_basis_points(value: float, decimals: int = 0) -> str:
@@ -107,8 +107,8 @@ def format_basis_points(value: float, decimals: int = 0) -> str:
     if math.isnan(value) or math.isinf(value):
         return "N/A bps"
 
-    format_spec = f":.{decimals}f"
-    return f"{value{format_spec}} bps"
+    format_spec = f".{decimals}f"
+    return f"{value:{format_spec}} bps"
 
 
 def format_date(
@@ -171,8 +171,8 @@ def format_moneyness(
     if math.isnan(value) or math.isinf(value):
         return "N/A"
 
-    format_spec = f":.{decimals}f"
-    formatted_value = f"{value{format_spec}}"
+    format_spec = f".{decimals}f"
+    formatted_value = f"{value:{format_spec}}"
 
     # Classify moneyness
     threshold = 0.02  # Allow ±2% for ATM
@@ -216,8 +216,8 @@ def format_greek(
     if math.isnan(value) or math.isinf(value):
         return f"{greek_name} = N/A"
 
-    format_spec = f":.{decimals}f"
-    formatted_value = f"{value{format_spec}}"
+    format_spec = f".{decimals}f"
+    formatted_value = f"{value:{format_spec}}"
 
     # Greek symbols and descriptions
     greek_info = {
@@ -298,8 +298,8 @@ def format_duration(
         months = int(years * 12)
         return f"{months} months"
 
-    format_spec = f":.{decimals}f"
-    return f"{years{format_spec}} years"
+    format_spec = f".{decimals}f"
+    return f"{years:{format_spec}} years"
 
 
 def format_with_unit(
@@ -332,8 +332,8 @@ def format_with_unit(
     if math.isnan(value) or math.isinf(value):
         return f"N/A {unit}"
 
-    format_spec = f":.{decimals}f"
-    formatted = f"{value{format_spec}}"
+    format_spec = f".{decimals}f"
+    formatted = f"{value:{format_spec}}"
 
     # No space before % or bps suffix
     if unit in ["%", "bps"]:
@@ -429,8 +429,8 @@ def format_confidence_score(
         raise ValueError(f"Confidence must be between 0 and 1, got {confidence}")
 
     pct = confidence * 100
-    format_spec = f":.{decimals}f"
-    formatted = f"{pct{format_spec}}%"
+    format_spec = f".{decimals}f"
+    formatted = f"{pct:{format_spec}}%"
 
     if confidence >= threshold_high:
         return f"{formatted} ✅ High"
